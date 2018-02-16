@@ -1,15 +1,23 @@
 # eMia-Android
 
-eMia - Android - version of the eMia application like a forum. You can post topics with title, description and body, attach a photo.
-You can register as a new user and then sign in. You can fill your profile.
-The App sends push-notification to another Android and iOS users in cases if user likes the post.     
-Here you can filter topics too. 
+eMia is an application like a forum. You can post topics with a title, description and a body, attach a photo.
+You can register as an user and then sign in. You can edit your profile.
+The App will send you a push-notification if another user likes your post.
 
 eMia uses Firebase database, storage, authentication, cloud messages.
-If you want to try eMia, you need a Google account. Then go to Firebase console https://console.firebase.google.com    
-Create new project. Please follow documentations. As a result you will have file google-services.json. Please replace my current one.
 
-Here (https://github.com/SKrotkih/eMia-iOS) you can see iOS - version eMia.
+## Requirements
+
+- Android Studio 3.0.1
+
+## Introduction
+
+If you want to try eMia, sign in your Google account, then open Firebase console https://console.firebase.google.com
+Create a new project. Then follow documentations. As a result you need to download google-services.json file and replace my current file.
+
+## eMia on iOS
+
+https://github.com/SKrotkih/eMia-iOS
 
 02-15-2018
 
