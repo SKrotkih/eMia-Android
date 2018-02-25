@@ -77,7 +77,7 @@ public class PostsListAdapter extends ArrayAdapter<PostsCollectionViewItem> impl
           Boolean success = (Boolean) data;
           if (success) {
             int colSpan = 1;
-            int rowSpan = post.portrait ? 1 : 1;
+            int rowSpan = post.photoHeight() > post.photoWidth() ? 2 : 1;
             PostsCollectionViewItem coolectionItem = new PostsCollectionViewItem(colSpan, rowSpan, 0);
             coolectionItem.post = post;
             List<PostsCollectionViewItem> items = new ArrayList<>();
@@ -103,7 +103,7 @@ public class PostsListAdapter extends ArrayAdapter<PostsCollectionViewItem> impl
             mDecCounter--;
             if (success) {
               int colSpan = 1;
-              int rowSpan = item.portrait ? 1 : 1;
+              int rowSpan = item.photoHeight() > item.photoWidth() ? 2 : 1;
               PostsCollectionViewItem coolectionItem = new PostsCollectionViewItem(colSpan, rowSpan, 0);
               coolectionItem.post = item;
               filteredItems.add(coolectionItem);

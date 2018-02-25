@@ -26,7 +26,7 @@ public class Post implements Serializable {
     public String body;
     public Bitmap photoBitmap;
     public long created;
-    public Boolean portrait;
+    public String photosize;
     public int starCount = 0;
     public Map<String, Boolean> stars = new HashMap<>();
 
@@ -38,9 +38,7 @@ public class Post implements Serializable {
         this.title = title;
         this.body = body;
         this.photoBitmap = bitmap;
-        int w = bitmap.getWidth();
-        int h = bitmap.getHeight();
-        this.portrait = w > h;
+        this.photosize = String.format("%d;%d", bitmap.getWidth(), bitmap.getHeight());
         this.created = System.currentTimeMillis()/1000;
     }
 
@@ -61,11 +59,29 @@ public class Post implements Serializable {
         result.put(Constants.Fields.Post.body, body);
         result.put(Constants.Fields.Post.starCount, starCount);
         result.put(Constants.Fields.Post.stars, stars);
-        result.put(Constants.Fields.Post.portrait, portrait);
+        result.put(Constants.Fields.Post.photosize, photosize);
         result.put(Constants.Fields.Post.created, created);
         return result;
     }
     // [END post_to_map]
+
+    public Double photoWidth() {
+        String[] separated = photosize.split(";");
+        if (separated.length == 2) {
+            return Double.parseDouble(separated[0]);
+        } else {
+            return 0.0;
+        }
+    };
+
+    public Double photoHeight() {
+        String[] separated = photosize.split(";");
+        if (separated.length == 2) {
+            return Double.parseDouble(separated[1]);
+        } else {
+            return 0.0;
+        }
+    };
 
 }
 // [END post_class]

@@ -86,7 +86,7 @@ public class Constants {
             public final static String body = "body";
             public final static String starCount = "starCount";
             public final static String stars = "stars";
-            public final static String portrait = "portrait";
+            public final static String photosize = "photosize";
             public final static String created = "created";
         }
 
