@@ -188,9 +188,9 @@ public class PostDetailActivity extends BaseActivity {
             public void callBack(int status, Object data) {
                 if (status == SUCCESS) {
                     Boolean isFavorite = (Boolean) data;
-                    int resId = R.drawable.ic_toggle_star_outline_24;
+                    int resId = R.drawable.ic_star_border_black_24dp;
                     if (isFavorite) {
-                        resId = R.drawable.ic_toggle_star_24;
+                        resId = R.drawable.ic_star_black_24dp;
                     }
                     mStarButton.setImageResource(resId);
                     mStarButton.setVisibility(View.VISIBLE);

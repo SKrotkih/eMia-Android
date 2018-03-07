@@ -15,7 +15,7 @@
         android:layout_marginLeft="15dp"
         android:contentDescription="@string/app_name"
         android:scaleType="fitCenter"
-        android:src="@drawable/arrow_left" />
+        android:src="@drawable/ic_arrow_back_black_24dp" />
 
     <TextView
         android:id="@+id/nav_bar_title_tv"
@@ -37,6 +37,6 @@
         android:contentDescription="@string/app_name"
         android:layout_marginRight="15dp"
         android:scaleType="fitCenter"
-        android:src="@drawable/ic_toggle_star_outline_24" />
+        android:src="@drawable/ic_star_border_black_24dp" />
 
 </RelativeLayout>

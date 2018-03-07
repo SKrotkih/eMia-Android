@@ -164,7 +164,7 @@
             android:layout_alignParentRight="true"
             app:backgroundTint="@color/colorPrimary"
             android:layout_margin="16dp"
-            android:src="@drawable/ic_navigation_check_24"/>
+            android:src="@drawable/ic_done_black_24dp"/>
 
     </RelativeLayout>
 
