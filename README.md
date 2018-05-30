@@ -1,10 +1,10 @@
 # eMia-Android
 
-eMia is an application like a forum. You can post topics with a title, description and a body, attach a photo.
-You can register as an user and then sign in. You can edit your profile.
-The App will send you a push-notification if another user likes your post.
+![newanigif2](https://user-images.githubusercontent.com/2775621/40715160-574c0c4a-640d-11e8-8ae8-4002c1476358.gif)
 
-eMia uses Firebase database, storage, authentication, cloud messages.
+This is my code example in Java. eMia is a simple social network. You can register, then post topics with a title, description and a photo.
+There are profile editor, push-notification if another user likes your post.
+It uses Firebase database, storage, authentication, cloud messages.
 
 ## Requirements
 
