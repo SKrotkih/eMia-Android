@@ -1,13 +1,14 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
 //apply from: 'gradle-maven-push.gradle'
 
 android {
-    compileSdkVersion 24
+    compileSdkVersion 26
     buildToolsVersion '28.0.3'
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 24
+        targetSdkVersion 26
     }
 
     compileOptions {
@@ -17,7 +18,18 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:24.2.1'
-    compile 'com.android.support:support-annotations:24.2.1'
-    compile 'com.android.support:recyclerview-v7:24.2.1'
+
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support:recyclerview-v7:26.1.0'
+    implementation 'com.android.support:cardview-v7:26.1.0'
+    implementation 'com.android.support:design:26.1.0'
+    implementation 'com.android.support:support-annotations:27.0.2'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+//    implementation 'com.android.support:support-v4:24.2.1'
+//    implementation 'com.android.support:support-annotations:24.2.1'
+//    implementation 'com.android.support:recyclerview-v7:24.2.1'
+}
+repositories {
+    mavenCentral()
 }

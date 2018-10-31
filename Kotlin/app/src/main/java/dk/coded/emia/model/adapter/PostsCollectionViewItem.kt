@@ -3,7 +3,7 @@ package dk.coded.emia.model.adapter
 import android.os.Parcel
 import android.os.Parcelable
 
-import dk.coded.emia.AsymmetricItem
+import dk.coded.library.AsymmetricItem
 import dk.coded.emia.model.Data.Post
 
 class PostsCollectionViewItem : AsymmetricItem {
