@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
-import dk.coded.emia.AsymmetricItem;
+import dk.coded.library.AsymmetricItem;
 import dk.coded.emia.model.Data.Post;
 
 public class PostsCollectionViewItem implements AsymmetricItem {

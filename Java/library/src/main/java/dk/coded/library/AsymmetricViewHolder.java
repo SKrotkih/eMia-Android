@@ -1,4 +1,4 @@
-package dk.coded.emia;
+package dk.coded.library;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

@@ -19,9 +19,9 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
-import dk.coded.emia.AsymmetricGridViewAdapter;
-import dk.coded.emia.AsymmetricGridView;
-import dk.coded.emia.Utils;
+import dk.coded.library.AsymmetricGridViewAdapter;
+import dk.coded.library.AsymmetricGridView;
+import dk.coded.library.Utils;
 
 import dk.coded.emia.R;
 import dk.coded.emia.View.activity.MainActivity;

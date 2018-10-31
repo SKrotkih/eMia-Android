@@ -1,4 +1,4 @@
-package dk.coded.emia;
+package dk.coded.library;
 
 import android.os.Parcelable;
 
