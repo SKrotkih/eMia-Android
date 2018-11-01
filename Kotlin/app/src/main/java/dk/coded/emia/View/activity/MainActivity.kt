@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Google Inc. All Rights Reserved.
+ * Copyright 2018 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,40 +20,28 @@ import android.app.Activity
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.os.Bundle
-import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentPagerAdapter
-import android.support.v4.content.LocalBroadcastManager
 import android.support.v4.view.ViewPager
-import android.util.Log
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.support.v7.widget.Toolbar
 import android.widget.ImageButton
 import android.widget.RelativeLayout
 import android.widget.SearchView
-import android.widget.TextView
-
-import com.google.firebase.auth.FirebaseAuth
-
-import butterknife.BindView
-import butterknife.ButterKnife
 import dk.coded.emia.R
 import dk.coded.emia.View.pages.MyPostsFragment
 import dk.coded.emia.View.pages.MyFavoritePostsFragment
 import dk.coded.emia.View.pages.RecentPostsFragment
 import dk.coded.emia.model.adapter.FilterStorage
 import dk.coded.emia.model.interactor.DatabaseFactory
-import dk.coded.emia.model.interactor.DatabaseInteractor
 import dk.coded.emia.notifications.LocalNotificationListener
-import dk.coded.emia.notifications.LocalNotificationReceiver
-import dk.coded.emia.notifications.RemoteNotifications
-import dk.coded.emia.utils.Constants
 import dk.coded.emia.utils.Utils
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.notification.*
+import kotlinx.android.synthetic.main.tool_bar.*
 
 class MainActivity : BaseActivity(), LocalNotificationListener {
 
@@ -61,27 +49,25 @@ class MainActivity : BaseActivity(), LocalNotificationListener {
     private var mPagerAdapter: FragmentPagerAdapter? = null
     private var mViewPager: ViewPager? = null
 
-    @BindView(R.id.fab_new_post)
-    internal var mNewPostButton: ImageButton? = null
-    @BindView(R.id.filter_button)
-    internal var mFilterButton: ImageButton? = null
-    @BindView(R.id.toolbar)
-    internal var mToolbar: Toolbar? = null
-    @BindView(R.id.rlNotification)
-    internal var rlNotification: RelativeLayout? = null
+    private val mNewPostButton: ImageButton
+        get() = fab_new_post
+    private val mFilterButton: ImageButton
+        get() = filter_button
+    private val mToolbar: Toolbar
+        get() = toolbar as Toolbar
+    private val rlNotification: RelativeLayout
+        get() = layout_Notification
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        ButterKnife.bind(this)
 
         initToolBar()
         initPageAdapter()
         initFilterButton()
         initNewPostButton()
         prepareNotificationsListener(activity)
-        rlNotification!!.visibility = View.GONE
+        rlNotification.visibility = View.GONE
     }
 
     override fun onResume() {
@@ -93,12 +79,12 @@ class MainActivity : BaseActivity(), LocalNotificationListener {
     }
 
     private fun initFilterButton() {
-        mFilterButton!!.setOnClickListener { startActivity(Intent(this@MainActivity, PostFilterActivity::class.java)) }
+        mFilterButton.setOnClickListener { startActivity(Intent(this@MainActivity, PostFilterActivity::class.java)) }
     }
 
     private fun initNewPostButton() {
         // Button launches NewPostActivity
-        mNewPostButton!!.setOnClickListener { startActivity(Intent(this@MainActivity, NewPostActivity::class.java)) }
+        mNewPostButton.setOnClickListener { startActivity(Intent(this@MainActivity, NewPostActivity::class.java)) }
     }
 
     private fun initPageAdapter() {
@@ -121,15 +107,15 @@ class MainActivity : BaseActivity(), LocalNotificationListener {
         // Set up the ViewPager with the sections adapter.
         mViewPager = findViewById(R.id.container)
         mViewPager!!.adapter = mPagerAdapter
-        val tabLayout = findViewById<TabLayout>(R.id.tabs)
+        val tabLayout = tabs
         tabLayout.setupWithViewPager(mViewPager)
     }
 
     private fun initToolBar() {
-        mToolbar!!.setTitle(R.string.app_name)
-        mToolbar!!.setTitleTextColor(Utils.getColor(this, android.R.color.white))
+        mToolbar.setTitle(R.string.app_name)
+        mToolbar.setTitleTextColor(Utils.getColor(this, android.R.color.white))
 
-        setSupportActionBar(mToolbar)
+        //setSupportActionBar(mToolbar)
 
         //        toolbar.setNavigationIcon(R.drawable.ic_toolbar_arrow);
         //        toolbar.setNavigationOnClickListener(
@@ -207,8 +193,6 @@ class MainActivity : BaseActivity(), LocalNotificationListener {
     }
 
     companion object {
-
         private val TAG = "MainActivity"
     }
-
 }

@@ -157,7 +157,7 @@ object RemoteNotifications {
         val tvNotificationTitle = activity.findViewById<View>(R.id.tvNotificationTitle) as TextView
         val tvNotificationBody = activity.findViewById<View>(R.id.tvNotificationBody) as TextView
         val ivNotificationImage = activity.findViewById<View>(R.id.ivNotificationImage) as ImageView
-        val rlNotification = activity.findViewById<View>(R.id.rlNotification) as RelativeLayout
+        val rlNotification = activity.findViewById<View>(R.id.layout_Notification) as RelativeLayout
         rlNotification.visibility = View.VISIBLE
         rlNotification.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.slide_down))
 
