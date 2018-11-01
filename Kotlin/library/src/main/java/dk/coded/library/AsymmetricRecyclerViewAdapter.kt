@@ -44,7 +44,7 @@ class AsymmetricRecyclerViewAdapter<T : RecyclerView.ViewHolder>(context: Contex
 
     override fun onBindAsymmetricViewHolder(
             holder: AsymmetricViewHolder<T>, parent: ViewGroup, position: Int) {
-        wrappedAdapter.onBindViewHolder(holder.wrappedViewHolder, position)
+        wrappedAdapter.onBindViewHolder(holder.wrappedViewHolder!!, position)
     }
 
     override fun getItemViewType(position: Int): Int {

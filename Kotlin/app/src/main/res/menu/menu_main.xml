@@ -9,7 +9,7 @@
         android:orderInCategory="100"
         android:title="Search"
         app:actionViewClass="android.widget.SearchView"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_my_profile"
