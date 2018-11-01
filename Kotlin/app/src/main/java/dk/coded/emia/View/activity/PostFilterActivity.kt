@@ -43,7 +43,7 @@ class PostFilterActivity : BaseActivity() {
     @BindView(R.id.tvAge)
     internal var tvAge: TextView? = null
     @BindView(R.id.mlAge)
-    internal var mlAge: RangeSeekBar<*>? = null
+    internal var mlAge: RangeSeekBar<Int>? = null
     @BindView(R.id.rbFilterSex)
     internal var rbFilterSex: RadioGroup? = null
     @BindView(R.id.rbFilterStatus)
@@ -186,13 +186,12 @@ class PostFilterActivity : BaseActivity() {
         mlAge!!.setRangeValues(Constants.FILTER_MIN_AGE_LIMIT, Constants.FILTER_MAX_AGE_LIMIT)
         mlAge!!.setSelectedMinValue(ageMin)
         mlAge!!.setSelectedMaxValue(ageMax)
-
-        mlAge!!.setOnRangeSeekBarChangeListener(RangeSeekBar.OnRangeSeekBarChangeListener<Int> { bar, minValue, maxValue ->
+        mlAge!!.setOnRangeSeekBarChangeListener({ bar, minValue, maxValue ->
             tvAge!!.text = minValue.toString() + " - " + maxValue
-            filter!!.ageMin = minValue
-            filter!!.ageMax = maxValue
-            ageMin = minValue!!
-            ageMax = maxValue!!
+            filter!!.ageMin = minValue as? Int
+            filter!!.ageMax = maxValue as? Int
+            ageMin = minValue as Int
+            ageMax = maxValue as Int
         })
     }
 

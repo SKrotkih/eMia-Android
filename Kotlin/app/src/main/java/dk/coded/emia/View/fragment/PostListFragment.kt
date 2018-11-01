@@ -44,8 +44,8 @@ abstract class PostListFragment : Fragment(), AdapterView.OnItemClickListener {
 
     abstract fun needShow(post: Post, user: User, callback: BasicCallBack)
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                          savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater!!, container, savedInstanceState)
 
         mActivity = activity
