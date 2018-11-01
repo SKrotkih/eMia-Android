@@ -99,7 +99,7 @@ private constructor() : Serializable, DatabaseInteractor {
                     Log.d(TAG, "signIn:onComplete:" + task.isSuccessful)
                     if (task.isSuccessful) {
                         saveToken()
-                        collback(Constants.SUCCESS, task.result.user)
+                        collback(Constants.SUCCESS, task.result!!.user)
                     } else {
                         collback(Constants.FAIL, null)
                     }
@@ -112,7 +112,7 @@ private constructor() : Serializable, DatabaseInteractor {
                     Log.d(TAG, "createUser:onComplete:" + task.isSuccessful)
                     if (task.isSuccessful) {
                         saveToken()
-                        collback(Constants.SUCCESS, task.result.user)
+                        collback(Constants.SUCCESS, task.result!!.user)
                     } else {
                         collback(Constants.FAIL, null)
                     }
@@ -219,7 +219,7 @@ private constructor() : Serializable, DatabaseInteractor {
     private fun writeNewPost(post: Post) {
         val key = dataBaseRef().child("posts").push().key
         post.id = key
-        uploadPhotoBitmap(post.photoBitmap!!, key, { status: Int, data: Any? ->
+        uploadPhotoBitmap(post.photoBitmap!!, key!!, { status: Int, data: Any? ->
             if (status == Constants.SUCCESS) {
                 val fileName = data as String
                 // Create new post at /user-posts/$userid/$postid and at

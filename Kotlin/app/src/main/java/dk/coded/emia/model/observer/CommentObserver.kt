@@ -25,30 +25,31 @@ class CommentObserver {
         // Create child event listener
         // [START child_event_listener_recycler]
         val childEventListener = object : ChildEventListener {
-            override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String) {
+
+            override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
                 // A new comment has been added
                 val comment = dataSnapshot.getValue<Comment>(Comment::class.java)
-                callback.addComment(comment!!, dataSnapshot.key)
+                callback.addComment(comment!!, dataSnapshot.key!!)
             }
 
-            override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildName: String) {
+            override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildName: String?) {
                 // A comment has changed
                 val newComment = dataSnapshot.getValue<Comment>(Comment::class.java)
                 val commentKey = dataSnapshot.key
-                callback.updateComment(newComment!!, commentKey)
+                callback.updateComment(newComment!!, commentKey!!)
             }
 
             override fun onChildRemoved(dataSnapshot: DataSnapshot) {
                 // A comment has changed
                 val commentKey = dataSnapshot.key
-                callback.deleteComment(commentKey)
+                callback.deleteComment(commentKey!!)
             }
 
-            override fun onChildMoved(dataSnapshot: DataSnapshot, previousChildName: String) {
+            override fun onChildMoved(dataSnapshot: DataSnapshot, previousChildName: String?) {
                 // A comment has changed position
                 val movedComment = dataSnapshot.getValue<Comment>(Comment::class.java)
                 val commentKey = dataSnapshot.key
-                callback.moveComment(movedComment!!, commentKey)
+                callback.moveComment(movedComment!!, commentKey!!)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {

@@ -148,13 +148,20 @@ class UserObserver private constructor() {
         // Create child event listener
         // [START child_event_listener_recycler]
         val childEventListener = object : ChildEventListener {
-            override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String) {
+
+            override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
                 // A new user has been added
                 val user = dataSnapshot.getValue<User>(User::class.java)
                 callback.addUser(user!!)
             }
 
-            override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildName: String) {
+            override fun onChildMoved(dataSnapshot: DataSnapshot, previousChildName: String?) {
+                // A comment has changed position
+                val movedUser = dataSnapshot.getValue<User>(User::class.java)
+                callback.moveUser(movedUser!!)
+            }
+
+            override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildName: String?) {
                 // A user has changed
                 val newUser = dataSnapshot.getValue<User>(User::class.java)
                 callback.updateUser(newUser!!)
@@ -163,13 +170,7 @@ class UserObserver private constructor() {
             override fun onChildRemoved(dataSnapshot: DataSnapshot) {
                 // A comment has changed
                 val userKey = dataSnapshot.key
-                callback.deleteUser(userKey)
-            }
-
-            override fun onChildMoved(dataSnapshot: DataSnapshot, previousChildName: String) {
-                // A comment has changed position
-                val movedUser = dataSnapshot.getValue<User>(User::class.java)
-                callback.moveUser(movedUser!!)
+                callback.deleteUser(userKey!!)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {

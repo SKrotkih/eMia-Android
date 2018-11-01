@@ -133,39 +133,39 @@ class PhotosManager {
 
         when (requestCode) {
             PICK_IMAGE_REQUEST -> if (resultCode == RESULT_OK) {
-                val selectedImage = data.data
-                val bs = object : BaseTarget<Bitmap>() {
-                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>) {
-                        _delegate!!.setPhoto(resource)
-                        progressIndicator!!.hide()
-                    }
-
-                    override fun removeCallback(cb: SizeReadyCallback) {}
-
-                    override fun getSize(cb: SizeReadyCallback) {}
-                }
-
-                GlideApp.with(this.parentActivity!!.applicationContext).asBitmap()
-                        .load(ImageFilePath.getPath(this.parentActivity!!.applicationContext, selectedImage!!))
-                        .override(PHOTO_MAX_WIDTH, PHOTO_MAX_HEIGHT)
-                        .fitCenter().into<BaseTarget<Bitmap>>(bs)
+//                val selectedImage = data.data
+//                val bs = object : BaseTarget<Bitmap>() {
+//                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>) {
+//                        _delegate!!.setPhoto(resource)
+//                        progressIndicator!!.hide()
+//                    }
+//
+//                    override fun removeCallback(cb: SizeReadyCallback) {}
+//
+//                    override fun getSize(cb: SizeReadyCallback) {}
+//                }
+//
+//                GlideApp.with(this.parentActivity!!.applicationContext).asBitmap()
+//                        .load(ImageFilePath.getPath(this.parentActivity!!.applicationContext, selectedImage!!))
+//                        .override(PHOTO_MAX_WIDTH, PHOTO_MAX_HEIGHT)
+//                        .fitCenter().into<BaseTarget<Bitmap>>(bs)
             }
             CAMERA_TAKE_REQUEST -> {
-                val bs = object : BaseTarget<Bitmap>() {
-                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>) {
-                        _delegate!!.setPhoto(resource)
-                        progressIndicator!!.hide()
-                    }
-
-                    override fun removeCallback(cb: SizeReadyCallback) {}
-
-                    override fun getSize(cb: SizeReadyCallback) {}
-                }
-
-                GlideApp.with(this.parentActivity!!.applicationContext).asBitmap()
-                        .load(file!!.absolutePath)
-                        .override(PHOTO_MAX_WIDTH, PHOTO_MAX_HEIGHT)
-                        .fitCenter().into<BaseTarget<Bitmap>>(bs)
+//                val bs = object : BaseTarget<Bitmap>() {
+//                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>) {
+//                        _delegate!!.setPhoto(resource)
+//                        progressIndicator!!.hide()
+//                    }
+//
+//                    override fun removeCallback(cb: SizeReadyCallback) {}
+//
+//                    override fun getSize(cb: SizeReadyCallback) {}
+//                }
+//
+//                GlideApp.with(this.parentActivity!!.applicationContext).asBitmap()
+//                        .load(file!!.absolutePath)
+//                        .override(PHOTO_MAX_WIDTH, PHOTO_MAX_HEIGHT)
+//                        .fitCenter().into<BaseTarget<Bitmap>>(bs)
             }
         }
     }

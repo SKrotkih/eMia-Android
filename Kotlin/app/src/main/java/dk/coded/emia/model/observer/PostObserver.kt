@@ -148,13 +148,13 @@ class PostObserver private constructor() {
         // Create child event listener
         // [START child_event_listener_recycler]
         val childEventListener = object : ChildEventListener {
-            override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String) {
+            override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
                 // A new post has been added
                 val post = dataSnapshot.getValue<Post>(Post::class.java)
                 callback.addPost(post!!)
             }
 
-            override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildName: String) {
+            override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildName: String?) {
                 // A post has changed
                 val newPost = dataSnapshot.getValue<Post>(Post::class.java)
                 callback.updatePost(newPost!!)
@@ -163,10 +163,10 @@ class PostObserver private constructor() {
             override fun onChildRemoved(dataSnapshot: DataSnapshot) {
                 // A post has changed
                 val postKey = dataSnapshot.key
-                callback.deletePost(postKey)
+                callback.deletePost(postKey!!)
             }
 
-            override fun onChildMoved(dataSnapshot: DataSnapshot, previousChildName: String) {
+            override fun onChildMoved(dataSnapshot: DataSnapshot, previousChildName: String?) {
                 // A post has changed position
                 val movedPost = dataSnapshot.getValue<Post>(Post::class.java)
                 callback.movePost(movedPost!!)
