@@ -3,7 +3,7 @@ package dk.coded.library
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 
-internal interface AGVBaseAdapter<T : RecyclerView.ViewHolder> {
+interface AGVBaseAdapter<T : RecyclerView.ViewHolder> {
     val actualItemCount: Int
     fun getItem(position: Int): AsymmetricItem
     fun notifyDataSetChanged()

@@ -21,11 +21,11 @@ class Post : Serializable {
     var id: String? = null
     var uid: String? = null
     var author: String? = null
-    var title: String
-    var body: String
-    var photoBitmap: Bitmap
+    var title: String = ""
+    var body: String = ""
+    var photoBitmap: Bitmap? = null
     var created: Long = 0
-    var photosize: String
+    var photosize: String = ""
     var starCount = 0
     var stars: Map<String, Boolean> = HashMap()
 
@@ -52,9 +52,9 @@ class Post : Serializable {
     @Exclude
     fun toMap(): Map<String, Any> {
         val result = HashMap<String, Any>()
-        result[Constants.Fields.Post.id] = id
-        result[Constants.Fields.Post.uid] = uid
-        result[Constants.Fields.Post.author] = author
+        result[Constants.Fields.Post.id] = id!!
+        result[Constants.Fields.Post.uid] = uid!!
+        result[Constants.Fields.Post.author] = author!!
         result[Constants.Fields.Post.title] = title
         result[Constants.Fields.Post.body] = body
         result[Constants.Fields.Post.starCount] = starCount

@@ -10,8 +10,9 @@ import android.widget.ListAdapter
 import android.widget.ListView
 
 class AsymmetricGridView(context: Context, attrs: AttributeSet) : ListView(context, attrs), AsymmetricView {
-    protected var onItemClickListener: AdapterView.OnItemClickListener? = null
-    protected var onItemLongClickListener: AdapterView.OnItemLongClickListener? = null
+
+    protected var _onItemClickListener: AdapterView.OnItemClickListener? = null
+    protected var _onItemLongClickListener: AdapterView.OnItemLongClickListener? = null
     protected var gridAdapter: AsymmetricGridViewAdapter? = null
     private val viewImpl: AsymmetricViewImpl
 
@@ -35,22 +36,50 @@ class AsymmetricGridView(context: Context, attrs: AttributeSet) : ListView(conte
         })
     }
 
+    override var isDebugging: Boolean
+        get() = viewImpl.isDebugging
+        set(value) {viewImpl.isDebugging = value}
+
+    override val numColumns: Int
+        get() = viewImpl.numColumns
+
+    override var isAllowReordering: Boolean
+        get() = viewImpl.isAllowReordering
+        set(value) {
+            viewImpl.isAllowReordering = value
+            if (gridAdapter != null) {
+                gridAdapter!!.recalculateItemsPerRow()
+            }
+        }
+
+    override val columnWidth: Int
+        get() = viewImpl.getColumnWidth(availableSpace)
+
     override fun setOnItemClickListener(listener: AdapterView.OnItemClickListener?) {
-        onItemClickListener = listener
+        _onItemClickListener = listener
     }
 
+    override val dividerHeight2: Int
+        get() = 1
+
+    override var requestedHorizontalSpacing: Int
+        get() = viewImpl.requestedHorizontalSpacing
+        set(spacing) {
+            viewImpl.requestedHorizontalSpacing = spacing
+        }
+
     override fun fireOnItemClick(position: Int, v: View) {
-        if (onItemClickListener != null) {
-            onItemClickListener!!.onItemClick(this, v, position, v.id.toLong())
+        if (_onItemClickListener != null) {
+            _onItemClickListener!!.onItemClick(this, v, position, v.id.toLong())
         }
     }
 
     override fun setOnItemLongClickListener(listener: AdapterView.OnItemLongClickListener) {
-        onItemLongClickListener = listener
+        _onItemLongClickListener = listener
     }
 
     override fun fireOnItemLongClick(position: Int, v: View): Boolean {
-        return onItemLongClickListener != null && onItemLongClickListener!!
+        return _onItemLongClickListener != null && _onItemLongClickListener!!
                 .onItemLongClick(this, v, position, v.id.toLong())
     }
 
@@ -67,19 +96,11 @@ class AsymmetricGridView(context: Context, attrs: AttributeSet) : ListView(conte
     }
 
     fun setRequestedColumnWidth(width: Int) {
-        viewImpl.setRequestedColumnWidth(width)
+        viewImpl.requestedColumnWidth = width
     }
 
     fun setRequestedColumnCount(requestedColumnCount: Int) {
-        viewImpl.setRequestedColumnCount(requestedColumnCount)
-    }
-
-    override fun getRequestedHorizontalSpacing(): Int {
-        return viewImpl.requestedHorizontalSpacing
-    }
-
-    fun setRequestedHorizontalSpacing(spacing: Int) {
-        viewImpl.requestedHorizontalSpacing = spacing
+        viewImpl.requestedColumnCount = requestedColumnCount
     }
 
     fun determineColumns() {
@@ -107,32 +128,5 @@ class AsymmetricGridView(context: Context, attrs: AttributeSet) : ListView(conte
         viewImpl.onRestoreInstanceState(state)
 
         setSelectionFromTop(20, 0)
-    }
-
-    override fun getNumColumns(): Int {
-        return viewImpl.numColumns
-    }
-
-    override fun getColumnWidth(): Int {
-        return viewImpl.getColumnWidth(availableSpace)
-    }
-
-    override fun isAllowReordering(): Boolean {
-        return viewImpl.isAllowReordering
-    }
-
-    fun setAllowReordering(allowReordering: Boolean) {
-        viewImpl.isAllowReordering = allowReordering
-        if (gridAdapter != null) {
-            gridAdapter!!.recalculateItemsPerRow()
-        }
-    }
-
-    override fun isDebugging(): Boolean {
-        return viewImpl.isDebugging
-    }
-
-    fun setDebugging(debugging: Boolean) {
-        viewImpl.isDebugging = debugging
     }
 }

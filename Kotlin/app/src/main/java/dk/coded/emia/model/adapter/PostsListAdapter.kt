@@ -29,8 +29,7 @@ import java.util.Collections
 import java.util.stream.Collectors
 
 import com.bumptech.glide.request.RequestOptions.bitmapTransform
-import dk.coded.emia.utils.Constants.FAIL
-import dk.coded.emia.utils.Constants.SUCCESS
+import dk.coded.emia.utils.Constants
 
 class PostsListAdapter(private val mContext: Context) : ArrayAdapter<PostsCollectionViewItem>(mContext, 0), PostsListAdapterProtocol, PostObserverProtocol, UserObserverProtocol {
     private val mInteractor: DatabaseInteractor
@@ -45,14 +44,14 @@ class PostsListAdapter(private val mContext: Context) : ArrayAdapter<PostsCollec
     }
 
     override fun startListening() {
-        UserObserver.instance.register(this, mContext)
+        UserObserver.instance!!.register(this, mContext)
     }
 
     // UserObserverProtocol
     override fun updateUsers(users: List<User>) {
         mUsers.clear()
         mUsers.addAll(users)
-        PostObserver.instance.register(this, mContext)
+        PostObserver.instance!!.register(this, mContext)
     }
 
     override fun newUser(user: User) {
@@ -66,14 +65,14 @@ class PostsListAdapter(private val mContext: Context) : ArrayAdapter<PostsCollec
 
     override fun newPost(post: Post) {
         val user = getUser(post)
-        showPostsStrategy!!.needShow(post, user) { status: Int, data: Any ->
-            if (status == SUCCESS) {
+        showPostsStrategy!!.needShow(post, user!!) { status: Int, data: Any? ->
+            if (status == Constants.SUCCESS) {
                 val success = data as Boolean
                 if (success) {
                     val colSpan = 1
                     // TODO: something like this. But it does not work!
                     // int rowSpan = post.photoHeight() > post.photoWidth() ? 2 : 1;
-                    val rowSpan = if (post.photoHeight() > post.photoWidth()) 1 else 1
+                    val rowSpan = if (post.photoHeight()!! > post.photoWidth()!!) 1 else 1
                     val coolectionItem = PostsCollectionViewItem(colSpan, rowSpan, 0)
                     coolectionItem.post = post
                     val items = ArrayList<PostsCollectionViewItem>()
@@ -93,15 +92,15 @@ class PostsListAdapter(private val mContext: Context) : ArrayAdapter<PostsCollec
         mDecCounter = posts.size
         for (item in posts) {
             val user = getUser(item)
-            showPostsStrategy!!.needShow(item, user) { status: Int, data: Any ->
+            showPostsStrategy!!.needShow(item, user!!) { status: Int, data: Any? ->
                 val success = data as Boolean
-                if (status == SUCCESS) {
+                if (status == Constants.SUCCESS) {
                     mDecCounter--
                     if (success) {
                         val colSpan = 1
                         // TODO: something like this. But it does not work!
                         // int rowSpan = item.photoHeight() > item.photoWidth() ? 2 : 1;
-                        val rowSpan = if (item.photoHeight() > item.photoWidth()) 1 else 1
+                        val rowSpan = if (item.photoHeight()!! > item.photoWidth()!!) 1 else 1
                         val coolectionItem = PostsCollectionViewItem(colSpan, rowSpan, 0)
                         coolectionItem.post = item
                         filteredItems.add(coolectionItem)
@@ -132,8 +131,8 @@ class PostsListAdapter(private val mContext: Context) : ArrayAdapter<PostsCollec
         val photoImageView = view.findViewById<View>(R.id.photoImageView) as ImageView
         val starButton = view.findViewById<View>(R.id.star_button) as ImageButton
 
-        mInteractor.downloadPhoto(mContext, post.id) { status: Int, data: Any ->
-            if (status == SUCCESS) {
+        mInteractor.downloadPhoto(mContext, post.id!!) { status: Int, data: Any? ->
+            if (status == Constants.SUCCESS) {
                 val uri = data as Uri
                 GlideApp.with(mContext.applicationContext)
                         .load(uri.toString())
@@ -146,20 +145,20 @@ class PostsListAdapter(private val mContext: Context) : ArrayAdapter<PostsCollec
         descriptionTextView.text = post.body
         starButton.visibility = View.GONE
 
-        mInteractor.isItMyFavoritePost(post) { status: Int, data: Any ->
-            if (status == SUCCESS) {
+        mInteractor.isItMyFavoritePost(post) { status: Int, data: Any? ->
+            if (status == Constants.SUCCESS) {
                 val isFavorite = data as Boolean
                 if (isFavorite) {
                     starButton.visibility = View.VISIBLE
                 }
-            } else if (status == FAIL) {
+            } else if (status == Constants.FAIL) {
 
             }
         }
     }
 
     override fun stopListening() {
-        PostObserver.instance.unregister(this)
+        PostObserver.instance!!.unregister(this)
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {

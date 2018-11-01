@@ -40,13 +40,13 @@ abstract class PostListFragment : Fragment(), AdapterView.OnItemClickListener {
     private var mRouter: MainScreenRouter? = null
 
     private var mActivity: Activity? = null
-    protected var mValidator: PostListValidator
+    protected var mValidator: PostListValidator? = null
 
     abstract fun needShow(post: Post, user: User, callback: BasicCallBack)
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        super.onCreateView(inflater, container, savedInstanceState)
+        super.onCreateView(inflater!!, container, savedInstanceState)
 
         mActivity = activity
 
@@ -56,7 +56,7 @@ abstract class PostListFragment : Fragment(), AdapterView.OnItemClickListener {
 
         mLayoutManager = LinearLayoutManager(mActivity)
 
-        mRouter = MainScreenRouter(mActivity, mActivity, mActivity)
+        mRouter = MainScreenRouter(mActivity!!, mActivity!!, mActivity!!)
 
         mListView = createListView(rootView)
 
@@ -68,22 +68,20 @@ abstract class PostListFragment : Fragment(), AdapterView.OnItemClickListener {
     // https://github.com/felipecsl/AsymmetricGridView
     private fun createListView(rootView: View): ListView {
         val gridView = rootView.findViewById<View>(R.id.messages_list) as AsymmetricGridView
-        val activity = activity
         gridView.setRequestedColumnCount(2)
         gridView.setBackgroundColor(Color.parseColor("#FFFFFF"))
-        gridView.requestedHorizontalSpacing = Utils.dpToPx(activity, 3f)
+        gridView.requestedHorizontalSpacing = Utils.dpToPx(mActivity!!, 3f)
         gridView.isDebugging = true
         gridView.onItemClickListener = this
         return gridView
     }
 
     private fun configureListViewAdapter(listView: ListView): PostsListAdapter {
-        val activity = activity
         val asymmetricGridView = listView as AsymmetricGridView
-        val adapter = PostsListAdapter(activity)
+        val adapter = PostsListAdapter(mActivity!!)
         // We use just needShow method. TODO: make interface with needShow method
         adapter.showPostsStrategy = this
-        val listViewAdapter = AsymmetricGridViewAdapter(activity, asymmetricGridView, adapter)
+        val listViewAdapter = AsymmetricGridViewAdapter(mActivity!!, asymmetricGridView, adapter)
         listView.setAdapter(listViewAdapter)
         return adapter
     }
@@ -116,8 +114,8 @@ abstract class PostListFragment : Fragment(), AdapterView.OnItemClickListener {
         stopDataListening()
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
-        outState!!.putInt("itemCount", mAdapter!!.count)
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putInt("itemCount", mAdapter!!.count)
         for (i in 0 until mAdapter!!.count) {
             outState.putParcelable("item_$i", mAdapter!!.getItem(i) as Parcelable)
         }

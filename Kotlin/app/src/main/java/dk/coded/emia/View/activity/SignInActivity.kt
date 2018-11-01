@@ -21,6 +21,7 @@ import dk.coded.emia.model.Data.User
 import dk.coded.emia.R
 
 import butterknife.BindView
+import dk.coded.emia.utils.Constants
 
 import dk.coded.emia.utils.Constants.Companion.SUCCESS
 
@@ -81,7 +82,7 @@ class SignInActivity : BaseActivity(), View.OnClickListener {
         showProgressDialog()
         interactor!!.signIn(email, password, this, { status, user ->
             hideProgressDialog()
-            if (status == Companion.getSUCCESS()) {
+            if (status == Constants.SUCCESS) {
                 onAuthSuccess()
             } else {
                 Toast.makeText(this@SignInActivity, resources.getString(R.string.signin_failed),
@@ -102,7 +103,7 @@ class SignInActivity : BaseActivity(), View.OnClickListener {
         showProgressDialog()
         interactor!!.signUp(email, password, this, { status, user ->
             hideProgressDialog()
-            if (status == Companion.getSUCCESS()) {
+            if (status == Constants.SUCCESS) {
                 onAuthSuccess()
             } else {
                 Toast.makeText(this@SignInActivity, resources.getString(R.string.signup_failed),

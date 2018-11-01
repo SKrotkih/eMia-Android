@@ -9,6 +9,6 @@ object DatabaseFactory {
 
     // TODO: Select Rules need
     val databaseInteractor: DatabaseInteractor
-        get() = FirebaseInteractor.instance
+        get() = (FirebaseInteractor.instance as? DatabaseInteractor)!!
 
 }

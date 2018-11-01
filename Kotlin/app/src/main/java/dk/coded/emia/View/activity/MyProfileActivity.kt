@@ -34,11 +34,9 @@ import dk.coded.emia.utils.PhotosManagerDelegate
 import dk.coded.emia.utils.PositionedCropTransformation
 
 import com.bumptech.glide.request.RequestOptions.bitmapTransform
-import dk.coded.emia.utils.Constants.Companion.CANCEL
-import dk.coded.emia.utils.Constants.Companion.FAIL
-import dk.coded.emia.utils.Constants.Companion.SUCCESS
 
 import butterknife.BindView
+import dk.coded.emia.utils.Constants
 
 /**
  * Created by oldman on 12/8/17.
@@ -121,14 +119,14 @@ class MyProfileActivity : BaseActivity(), View.OnClickListener, PhotosManagerDel
         super.onStart()
 
         val thisContext = this
-        databaseInteractor!!.currentUser({ status: Int, data: Any ->
-            if (status == Companion.getSUCCESS()) {
+        databaseInteractor!!.currentUser(){ status: Int, data: Any? ->
+            if (status == Constants.SUCCESS) {
                 val user = data as User
                 mUser = user
                 userNameTextView!!.setText(user.username)
                 userEmailTextView!!.text = user.email
 
-                if (user.yearbirth != null && user.yearbirth > 0) {
+                if (user.yearbirth != null && user.yearbirth!! > 0) {
                     val index = 2006 - user.yearbirth!!
                     userYearOfBirthSpinner!!.setSelection(index)
                 } else {
@@ -146,8 +144,8 @@ class MyProfileActivity : BaseActivity(), View.OnClickListener, PhotosManagerDel
                 } else {
                     userMunicipalitySpinner!!.setSelection(0)
                 }
-                databaseInteractor!!.downloadPhoto(this@MyProfileActivity, user.id, { status2: Int, data2: Any ->
-                    if (status2 == Companion.getSUCCESS()) {
+                databaseInteractor!!.downloadPhoto(this@MyProfileActivity, user.id, { status2: Int, data2: Any? ->
+                    if (status2 == Constants.SUCCESS) {
                         val uri = data2 as Uri
                         GlideApp.with(thisContext.applicationContext)
                                 .load(uri.toString())
@@ -155,7 +153,7 @@ class MyProfileActivity : BaseActivity(), View.OnClickListener, PhotosManagerDel
                                 .into(userPhotoImageView!!)
                     }
                 })
-            } else if (status == Companion.getFAIL()) {
+            } else if (status == Constants.FAIL) {
                 userNameTextView!!.setText("")
                 userEmailTextView!!.text = ""
                 userPhotoImageView!!.setImageBitmap(null)
@@ -163,7 +161,7 @@ class MyProfileActivity : BaseActivity(), View.OnClickListener, PhotosManagerDel
                 userGenderSpinner!!.setSelection(0)
                 userMunicipalitySpinner!!.setSelection(0)
             }
-        })
+        }
     }
 
     private fun changeMyPhoto() {
@@ -174,10 +172,10 @@ class MyProfileActivity : BaseActivity(), View.OnClickListener, PhotosManagerDel
 
     override fun setPhoto(bitmap: Bitmap) {
         val fileName = databaseInteractor!!.currentUserId
-        databaseInteractor!!.uploadPhotoBitmap(bitmap, fileName, { status: Int, data: Any ->
-            if (status == Companion.getSUCCESS()) {
+        databaseInteractor!!.uploadPhotoBitmap(bitmap, fileName, { status: Int, data: Any? ->
+            if (status == Constants.SUCCESS) {
                 userPhotoImageView!!.setImageBitmap(bitmap)
-            } else if (status == Companion.getFAIL()) {
+            } else if (status == Constants.FAIL) {
             }
         })
     }
@@ -197,11 +195,11 @@ class MyProfileActivity : BaseActivity(), View.OnClickListener, PhotosManagerDel
         mUser!!.yearbirth = Integer.parseInt(yearbirth)
         mUser!!.gender = gender
         mUser!!.address = selectedMunicipality
-        databaseInteractor!!.updateUser(mUser!!, { status: Int, data: Any ->
-            if (status == Companion.getSUCCESS()) {
+        databaseInteractor!!.updateUser(mUser!!, { status: Int, data: Any? ->
+            if (status == Constants.SUCCESS) {
                 finish()
-            } else if (status == Companion.getFAIL()) {
-            } else if (status == Companion.getCANCEL()) {
+            } else if (status == Constants.FAIL) {
+            } else if (status == Constants.CANCEL) {
             }
         })
     }

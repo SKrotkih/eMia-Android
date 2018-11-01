@@ -9,8 +9,6 @@ import dk.coded.emia.model.Data.Post
 import dk.coded.emia.model.Data.User
 import dk.coded.emia.utils.Constants
 
-import dk.coded.emia.utils.Constants.SUCCESS
-
 /**
  * Created by oldman on 1/2/18.
  */

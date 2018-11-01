@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.DialogInterface
 import android.support.v7.app.AlertDialog
 
-import dk.coded.emia.utils.Constants.SUCCESS
+import dk.coded.emia.utils.Constants
 
 /**
  * Created by oldman on 1/28/18.
@@ -18,7 +18,7 @@ object Alerts {
         builder.setMessage(message)
         val alert = builder.create()
         alert.setButton(AlertDialog.BUTTON_NEUTRAL, "OK"
-        ) { dialog, which -> callback.callBack(SUCCESS, null) }
+        ) { dialog, which -> callback(Constants.SUCCESS, null) }
         alert.show()
     }
 

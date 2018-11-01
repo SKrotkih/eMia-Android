@@ -9,8 +9,6 @@ internal class AsymmetricViewImpl(context: Context) {
     var numColumns = DEFAULT_COLUMN_COUNT
         protected set
     var requestedHorizontalSpacing: Int = 0
-    protected var requestedColumnWidth: Int = 0
-    protected var requestedColumnCount: Int = 0
     var isAllowReordering: Boolean = false
     var isDebugging: Boolean = false
 
@@ -18,13 +16,17 @@ internal class AsymmetricViewImpl(context: Context) {
         requestedHorizontalSpacing = Utils.dpToPx(context, 5f)
     }
 
-    fun setRequestedColumnWidth(width: Int) {
-        requestedColumnWidth = width
-    }
+    var requestedColumnWidth: Int
+        get() = 0
+        set(width) {
+            requestedColumnWidth = width
+        }
 
-    fun setRequestedColumnCount(requestedColumnCount: Int) {
-        this.requestedColumnCount = requestedColumnCount
-    }
+    var requestedColumnCount: Int
+        get() = 0
+        set(void) {
+            requestedColumnCount = void
+        }
 
     fun determineColumns(availableSpace: Int): Int {
         var numColumns: Int
@@ -80,7 +82,7 @@ internal class AsymmetricViewImpl(context: Context) {
         var defaultPadding: Int = 0
         var debugging: Boolean = false
         var allowReordering: Boolean = false
-        var adapterState: Parcelable
+//        var adapterState: Parcelable
         var loader: ClassLoader? = null
 
         constructor(superState: Parcelable) : super(superState) {}
@@ -95,7 +97,7 @@ internal class AsymmetricViewImpl(context: Context) {
             defaultPadding = `in`.readInt()
             debugging = `in`.readByte().toInt() == 1
             allowReordering = `in`.readByte().toInt() == 1
-            adapterState = `in`.readParcelable(loader)
+//            adapterState = `in`.readParcelable(loader)
         }
 
         override fun writeToParcel(dest: Parcel, flags: Int) {
@@ -109,17 +111,18 @@ internal class AsymmetricViewImpl(context: Context) {
             dest.writeInt(defaultPadding)
             dest.writeByte((if (debugging) 1 else 0).toByte())
             dest.writeByte((if (allowReordering) 1 else 0).toByte())
-            dest.writeParcelable(adapterState, flags)
+//            dest.writeParcelable(adapterState, flags)
         }
 
         companion object {
 
+            @JvmField
             val CREATOR: Parcelable.Creator<SavedState> = object : Parcelable.Creator<SavedState> {
                 override fun createFromParcel(`in`: Parcel): SavedState {
                     return SavedState(`in`)
                 }
 
-                override fun newArray(size: Int): Array<SavedState> {
+                override fun newArray(size: Int): Array<SavedState?> {
                     return arrayOfNulls(size)
                 }
             }

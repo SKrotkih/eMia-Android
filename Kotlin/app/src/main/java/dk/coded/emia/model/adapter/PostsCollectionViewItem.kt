@@ -7,16 +7,16 @@ import dk.coded.library.AsymmetricItem
 import dk.coded.emia.model.Data.Post
 
 class PostsCollectionViewItem : AsymmetricItem {
-    private var columnSpan: Int = 0
-    private var rowSpan: Int = 0
+    var _columnSpan: Int = 0
+    var _rowSpan: Int = 0
     var position: Int = 0
         private set
     var post: Post? = null
 
     @JvmOverloads
     constructor(columnSpan: Int = 1, rowSpan: Int = 1, position: Int = 0) {
-        this.columnSpan = columnSpan
-        this.rowSpan = rowSpan
+        this._columnSpan = columnSpan
+        this._rowSpan = rowSpan
         this.position = position
     }
 
@@ -24,13 +24,13 @@ class PostsCollectionViewItem : AsymmetricItem {
         readFromParcel(`in`)
     }
 
-    override fun getColumnSpan(): Int {
-        return columnSpan
-    }
+    override var columnSpan: Int
+        get() = _columnSpan
+        set(value) {_columnSpan = value}
 
-    override fun getRowSpan(): Int {
-        return rowSpan
-    }
+    override var rowSpan: Int
+        get() = _rowSpan
+        set(value) { _rowSpan = value}
 
     override fun toString(): String {
         return String.format("%s: %sx%s", position, rowSpan, columnSpan)
@@ -55,12 +55,13 @@ class PostsCollectionViewItem : AsymmetricItem {
     companion object {
 
         /* Parcelable interface implementation */
+        @JvmField
         val CREATOR: Parcelable.Creator<PostsCollectionViewItem> = object : Parcelable.Creator<PostsCollectionViewItem> {
             override fun createFromParcel(`in`: Parcel): PostsCollectionViewItem {
                 return PostsCollectionViewItem(`in`)
             }
 
-            override fun newArray(size: Int): Array<PostsCollectionViewItem> {
+            override fun newArray(size: Int): Array<PostsCollectionViewItem?> {
                 return arrayOfNulls(size)
             }
         }

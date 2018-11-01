@@ -31,6 +31,32 @@ class AsymmetricRecyclerView(context: Context, attrs: AttributeSet) : RecyclerVi
         })
     }
 
+    override val columnWidth: Int
+        get() = viewImpl.getColumnWidth(availableSpace)
+
+
+    override val dividerHeight2: Int
+        get() = 0
+
+
+    override val isAllowReordering: Boolean
+        get() = viewImpl.isAllowReordering
+
+
+    override val isDebugging: Boolean
+        get() = viewImpl.isDebugging
+
+    override val numColumns: Int
+        get() = viewImpl.numColumns
+
+
+    fun setRequestedColumnCount(requestedColumnCount: Int) {
+        viewImpl.requestedColumnCount = requestedColumnCount
+    }
+
+    override val requestedHorizontalSpacing: Int
+        get() = viewImpl.requestedHorizontalSpacing
+
     override fun setAdapter(adapter: RecyclerView.Adapter<*>) {
         if (adapter !is AsymmetricRecyclerViewAdapter<*>) {
             throw UnsupportedOperationException(
@@ -48,38 +74,10 @@ class AsymmetricRecyclerView(context: Context, attrs: AttributeSet) : RecyclerVi
         viewImpl.determineColumns(availableSpace)
     }
 
-    override fun isDebugging(): Boolean {
-        return viewImpl.isDebugging
-    }
-
-    override fun getNumColumns(): Int {
-        return viewImpl.numColumns
-    }
-
-    override fun isAllowReordering(): Boolean {
-        return viewImpl.isAllowReordering
-    }
-
     override fun fireOnItemClick(index: Int, v: View) {}
 
     override fun fireOnItemLongClick(index: Int, v: View): Boolean {
         return false
-    }
-
-    override fun getColumnWidth(): Int {
-        return viewImpl.getColumnWidth(availableSpace)
-    }
-
-    override fun getDividerHeight(): Int {
-        return 0
-    }
-
-    override fun getRequestedHorizontalSpacing(): Int {
-        return viewImpl.requestedHorizontalSpacing
-    }
-
-    fun setRequestedColumnCount(requestedColumnCount: Int) {
-        viewImpl.setRequestedColumnCount(requestedColumnCount)
     }
 
     fun setRequestedHorizontalSpacing(spacing: Int) {

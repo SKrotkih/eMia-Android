@@ -5,13 +5,13 @@ import android.content.Context
 import android.content.Intent
 
 class LocalNotificationReceiver : BroadcastReceiver() {
-    internal var listener: LocalNotificationListener
+    internal var listener: LocalNotificationListener? = null
 
     fun addUpdateListener(listener: LocalNotificationListener) {
         this.listener = listener
     }
 
     override fun onReceive(context: Context, intent: Intent) {
-        listener.onLocalNotificationUpdate(intent)
+        listener!!.onLocalNotificationUpdate(intent)
     }
 }

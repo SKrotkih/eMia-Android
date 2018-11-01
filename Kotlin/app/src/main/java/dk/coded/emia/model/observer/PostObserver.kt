@@ -64,7 +64,7 @@ class PostObserver private constructor() {
             val progress = ProgressBarHandler(context)
             progress.show()
             val r = {
-                mInteractor.getAllPosts({ status: Int, data: Any ->
+                mInteractor.getAllPosts({ status: Int, data: Any? ->
                     progress.hide()
                     val posts = data as ArrayList<Post>
                     for (item in posts) {
@@ -151,13 +151,13 @@ class PostObserver private constructor() {
             override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String) {
                 // A new post has been added
                 val post = dataSnapshot.getValue<Post>(Post::class.java)
-                callback.addPost(post)
+                callback.addPost(post!!)
             }
 
             override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildName: String) {
                 // A post has changed
                 val newPost = dataSnapshot.getValue<Post>(Post::class.java)
-                callback.updatePost(newPost)
+                callback.updatePost(newPost!!)
             }
 
             override fun onChildRemoved(dataSnapshot: DataSnapshot) {
@@ -169,7 +169,7 @@ class PostObserver private constructor() {
             override fun onChildMoved(dataSnapshot: DataSnapshot, previousChildName: String) {
                 // A post has changed position
                 val movedPost = dataSnapshot.getValue<Post>(Post::class.java)
-                callback.movePost(movedPost)
+                callback.movePost(movedPost!!)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {

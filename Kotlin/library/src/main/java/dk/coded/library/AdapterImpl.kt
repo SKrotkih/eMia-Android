@@ -16,7 +16,7 @@ import android.widget.LinearLayout
 import java.util.ArrayList
 import java.util.HashMap
 
-internal class AdapterImpl(private val context: Context, private val agvAdapter: AGVBaseAdapter<*>, private val listView: AsymmetricView) : View.OnClickListener, View.OnLongClickListener {
+class AdapterImpl(private val context: Context, val agvAdapter: AGVBaseAdapter<*>, val listView: AsymmetricView) : View.OnClickListener, View.OnLongClickListener {
     private val itemsPerRow = HashMap<Int, RowInfo>()
     private val linearLayoutPool: ObjectPool<LinearLayout>
     private val viewHoldersMap = ArrayMap<Int, ObjectPool<AsymmetricViewHolder<*>>>()
@@ -94,7 +94,7 @@ internal class AdapterImpl(private val context: Context, private val agvAdapter:
 
         val rowInfo = itemsPerRow[position] ?: return
 
-        val rowItems = ArrayList(rowInfo.items)
+        val rowItems = ArrayList(rowInfo.getItems())
         val layout = initializeLayout(holder.itemView())
         // Index to control the current position of the current column in this row
         var columnIndex = 0
@@ -128,7 +128,7 @@ internal class AdapterImpl(private val context: Context, private val agvAdapter:
                 if (viewHolder == null) {
                     viewHolder = agvAdapter.onCreateAsymmetricViewHolder(actualIndex, parent, viewType)
                 }
-                agvAdapter.onBindAsymmetricViewHolder(viewHolder, parent, actualIndex)
+                //agvAdapter.onBindAsymmetricViewHolder(viewHolder, parent, actualIndex)
                 val view = viewHolder!!.itemView
                 view.tag = ViewState(viewType, currentItem, viewHolder)
                 view.setOnClickListener(this)
@@ -185,7 +185,7 @@ internal class AdapterImpl(private val context: Context, private val agvAdapter:
         val rowHeight = listView.columnWidth * rowSpan
         // when the item spans multiple rows, we need to account for the vertical padding
         // and add that to the total final height
-        return rowHeight + (rowSpan - 1) * listView.dividerHeight
+        return rowHeight + (rowSpan - 1) * listView.dividerHeight2
     }
 
     fun getRowWidth(item: AsymmetricItem): Int {
@@ -211,7 +211,7 @@ internal class AdapterImpl(private val context: Context, private val agvAdapter:
                 val innerView = tempChild.getChildAt(k)
                 val viewState = innerView.tag as ViewState
                 val pool = viewHoldersMap[viewState.viewType]
-                pool.put(viewState.viewHolder)
+                pool!!.put(viewState.viewHolder)
             }
             tempChild.removeAllViews()
         }
@@ -267,7 +267,7 @@ internal class AdapterImpl(private val context: Context, private val agvAdapter:
 
             if (debugEnabled) {
                 for ((key, value) in itemsPerRow) {
-                    Log.d(TAG, "row: " + key + ", items: " + value.items.size)
+                    Log.d(TAG, "row: " + key + ", items: " + value.getItems().size)
                 }
             }
 
@@ -279,7 +279,7 @@ internal class AdapterImpl(private val context: Context, private val agvAdapter:
 
             while (!itemsToAdd.isEmpty()) {
                 val stuffThatFit = calculateItemsForRow(itemsToAdd)
-                val itemsThatFit = stuffThatFit.items
+                val itemsThatFit = stuffThatFit.getItems()
 
                 if (itemsThatFit.isEmpty()) {
                     // we can't fit a single item inside a row.
@@ -298,9 +298,9 @@ internal class AdapterImpl(private val context: Context, private val agvAdapter:
         }
     }
 
-    private class ViewState private constructor(private val viewType: Int, private val rowItem: RowItem, private val viewHolder: AsymmetricViewHolder<*>)
+    private class ViewState constructor(val viewType: Int, val rowItem: RowItem, val viewHolder: AsymmetricViewHolder<*>)
 
-    internal class ViewHolder(itemView: LinearLayout) : RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: LinearLayout) : RecyclerView.ViewHolder(itemView) {
 
         fun itemView(): LinearLayout {
             return itemView as LinearLayout

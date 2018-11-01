@@ -40,10 +40,7 @@ import dk.coded.emia.model.Data.User
 import dk.coded.emia.utils.BasicCallBack
 
 import android.content.ContentValues.TAG
-import dk.coded.emia.utils.Constants.DATABASE_NAME
-import dk.coded.emia.utils.Constants.FAIL
-import dk.coded.emia.utils.Constants.FIREBASE_STORAGE
-import dk.coded.emia.utils.Constants.SUCCESS
+import dk.coded.emia.utils.Constants
 
 /**
  * Created by oldman on 11/30/17.
@@ -63,7 +60,7 @@ private constructor() : Serializable, DatabaseInteractor {
         get() = currentUser()!!.uid
 
     override val currentUserEmail: String
-        get() = currentUser()!!.email
+        get() = currentUser()?.email!!
 
     // Sign Up, Sign In
 
@@ -86,10 +83,10 @@ private constructor() : Serializable, DatabaseInteractor {
     override fun dataBaseRef(): DatabaseReference {
         if (mDatabase == null) {
             // [START initialize_database_ref]
-            mDatabase = FirebaseDatabase.getInstance().reference.child(DATABASE_NAME)
+            mDatabase = FirebaseDatabase.getInstance().reference.child(Constants.DATABASE_NAME)
             // [END initialize_database_ref]
         }
-        return mDatabase
+        return mDatabase!!
     }
 
     private fun currentUser(): FirebaseUser? {
@@ -102,9 +99,9 @@ private constructor() : Serializable, DatabaseInteractor {
                     Log.d(TAG, "signIn:onComplete:" + task.isSuccessful)
                     if (task.isSuccessful) {
                         saveToken()
-                        collback.callBack(SUCCESS, task.result.user)
+                        collback(Constants.SUCCESS, task.result.user)
                     } else {
-                        collback.callBack(FAIL, null)
+                        collback(Constants.FAIL, null)
                     }
                 }
     }
@@ -115,9 +112,9 @@ private constructor() : Serializable, DatabaseInteractor {
                     Log.d(TAG, "createUser:onComplete:" + task.isSuccessful)
                     if (task.isSuccessful) {
                         saveToken()
-                        collback.callBack(SUCCESS, task.result.user)
+                        collback(Constants.SUCCESS, task.result.user)
                     } else {
-                        collback.callBack(FAIL, null)
+                        collback(Constants.FAIL, null)
                     }
                 }
     }
@@ -127,8 +124,8 @@ private constructor() : Serializable, DatabaseInteractor {
     }
 
     private fun saveToken() {
-        currentUser({ status: Int, data: Any ->
-            if (status == SUCCESS) {
+        currentUser({ status: Int, data: Any? ->
+            if (status == Constants.SUCCESS) {
                 val user = data as User
                 val currentToken = FirebaseInstanceId.getInstance().token
                 if (user.tokenAndroid == null) {
@@ -138,7 +135,7 @@ private constructor() : Serializable, DatabaseInteractor {
                     user.tokenAndroid = currentToken
                     updateUser(user, { updatestatus, updateddata -> })
                 }
-            } else if (status == FAIL) {
+            } else if (status == Constants.FAIL) {
             }
         })
     }
@@ -152,14 +149,14 @@ private constructor() : Serializable, DatabaseInteractor {
                 val users = ArrayList<User>()
                 if (dataSnapshot.hasChildren()) {
                     for (ds in dataSnapshot.children) {
-                        users.add(ds.getValue<User>(User::class.java))
+                        users.add(ds.getValue<User>(User::class.java)!!)
                     }
                 }
-                collback.callBack(SUCCESS, users)
+                collback(Constants.SUCCESS, users)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-                collback.callBack(SUCCESS, ArrayList<Any>())
+                collback(Constants.SUCCESS, ArrayList<Any>())
             }
         })
     }
@@ -174,7 +171,7 @@ private constructor() : Serializable, DatabaseInteractor {
         val childUpdates = HashMap<String, Any>()
         childUpdates["/users/" + user.id] = userValues
         dataBaseRef().updateChildren(childUpdates)
-        callback.callBack(SUCCESS, null)
+        callback(Constants.SUCCESS, 0)
     }
 
     override fun currentUser(callback: BasicCallBack) {
@@ -192,9 +189,9 @@ private constructor() : Serializable, DatabaseInteractor {
 
                         if (user == null) {
                             // User is null, error out
-                            callback.callBack(FAIL, "User $userId is unexpectedly null")
+                            callback(Constants.FAIL, "User $userId is unexpectedly null")
                         } else {
-                            callback.callBack(SUCCESS, user)
+                            callback(Constants.SUCCESS, user)
                         }
                     }
 
@@ -205,16 +202,16 @@ private constructor() : Serializable, DatabaseInteractor {
     }
 
     override fun addPost(post: Post, callback: BasicCallBack) {
-        currentUser({ status: Int, data: Any ->
-            if (status == SUCCESS) {
+        currentUser({ status: Int, data: Any? ->
+            if (status == Constants.SUCCESS) {
                 val user = data as User
                 post.uid = user.id
                 post.author = user.username
                 writeNewPost(post)
-                callback.callBack(SUCCESS, null)
-            } else if (status == FAIL) {
+                callback(Constants.SUCCESS, null)
+            } else if (status == Constants.FAIL) {
                 val errorDescription = data as String
-                callback.callBack(FAIL, errorDescription)
+                callback(Constants.FAIL, errorDescription)
             }
         })
     }
@@ -222,8 +219,8 @@ private constructor() : Serializable, DatabaseInteractor {
     private fun writeNewPost(post: Post) {
         val key = dataBaseRef().child("posts").push().key
         post.id = key
-        uploadPhotoBitmap(post.photoBitmap, key, { status: Int, data: Any ->
-            if (status == SUCCESS) {
+        uploadPhotoBitmap(post.photoBitmap!!, key, { status: Int, data: Any? ->
+            if (status == Constants.SUCCESS) {
                 val fileName = data as String
                 // Create new post at /user-posts/$userid/$postid and at
                 // /posts/$postid simultaneously
@@ -235,7 +232,7 @@ private constructor() : Serializable, DatabaseInteractor {
                 childUpdates["/user-posts/" + post.uid + "/" + post.id] = postValues
 
                 dataBaseRef().updateChildren(childUpdates)
-            } else if (status == FAIL) {
+            } else if (status == Constants.FAIL) {
             }
         })
     }
@@ -248,13 +245,13 @@ private constructor() : Serializable, DatabaseInteractor {
         val bitmapdata = bos.toByteArray()
         val bs = ByteArrayInputStream(bitmapdata)
 
-        uploadPhotoFromStream(bs, fileName, { status: Int, data: Any ->
-            if (status == SUCCESS) {
+        uploadPhotoFromStream(bs, fileName, { status: Int, data: Any? ->
+            if (status == Constants.SUCCESS) {
                 val uploadedFileName = data as String
-                callbak.callBack(SUCCESS, uploadedFileName)
-            } else if (status == FAIL) {
+                callbak(Constants.SUCCESS, uploadedFileName)
+            } else if (status == Constants.FAIL) {
                 val errorDescription = data as String
-                callbak.callBack(FAIL, errorDescription)
+                callbak(Constants.FAIL, errorDescription)
             }
         })
     }
@@ -264,27 +261,27 @@ private constructor() : Serializable, DatabaseInteractor {
         val path = String.format("%s.jpg", id)
 
         val storage = FirebaseStorage.getInstance()
-        val ref = storage.getReferenceFromUrl(FIREBASE_STORAGE).child(path)
+        val ref = storage.getReferenceFromUrl(Constants.FIREBASE_STORAGE).child(path)
 
         ref.putStream(stream)
-                .addOnSuccessListener { callback.callBack(SUCCESS, path) }
+                .addOnSuccessListener { callback(Constants.SUCCESS, path) }
                 .addOnFailureListener { exception ->
                     val errorDescription = "setPersonPhotoFromStream upload onFailure: " + exception.toString()
-                    callback.callBack(FAIL, errorDescription)
+                    callback(Constants.FAIL, errorDescription)
                 }
     }
 
     override fun downloadPhoto(ctx: Context, id: String, collback: BasicCallBack) {
         val path = String.format("%s.jpg", id)
         val storage = FirebaseStorage.getInstance()
-        val storageRef = storage.getReferenceFromUrl(FIREBASE_STORAGE).child(path)
-        storageRef.downloadUrl.addOnSuccessListener { uri -> collback.callBack(SUCCESS, uri) }
+        val storageRef = storage.getReferenceFromUrl(Constants.FIREBASE_STORAGE).child(path)
+        storageRef.downloadUrl.addOnSuccessListener { uri -> collback(Constants.SUCCESS, uri) }
     }
 
     override fun addCommentToPost(post: Post, commentText: String, callback: BasicCallBack) {
 
-        currentUser({ status: Int, data: Any ->
-            if (status == SUCCESS) {
+        currentUser({ status: Int, data: Any? ->
+            if (status == Constants.SUCCESS) {
                 val user = data as User
                 val key = dataBaseRef().child("comments").child(post.id!!).push().key
                 val comment = Comment(commentText)
@@ -296,10 +293,10 @@ private constructor() : Serializable, DatabaseInteractor {
                 val childUpdates = HashMap<String, Any>()
                 childUpdates["/comments/" + post.id + "/" + key] = commentValues
                 dataBaseRef().updateChildren(childUpdates)
-                callback.callBack(SUCCESS, null)
-            } else if (status == FAIL) {
+                callback(Constants.SUCCESS, 0)
+            } else if (status == Constants.FAIL) {
                 val errorDescription = data as String
-                callback.callBack(FAIL, errorDescription)
+                callback(Constants.FAIL, errorDescription)
             }
         })
     }
@@ -315,11 +312,11 @@ private constructor() : Serializable, DatabaseInteractor {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 // Get Post object and use the values to update the UI
                 val post = dataSnapshot.getValue<Post>(Post::class.java)
-                callback.callBack(SUCCESS, post)
+                callback(Constants.SUCCESS, post)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-                callback.callBack(FAIL, databaseError)
+                callback(Constants.FAIL, databaseError)
             }
         }
         mPostReference!!.addValueEventListener(postListener)
@@ -335,14 +332,14 @@ private constructor() : Serializable, DatabaseInteractor {
                 val posts = ArrayList<Post>()
                 if (dataSnapshot.hasChildren()) {
                     for (ds in dataSnapshot.children) {
-                        posts.add(ds.getValue<Post>(Post::class.java))
+                        posts.add(ds.getValue<Post>(Post::class.java)!!)
                     }
                 }
-                collback.callBack(SUCCESS, posts)
+                collback(Constants.SUCCESS, posts)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-                collback.callBack(SUCCESS, ArrayList<Any>())
+                collback(Constants.SUCCESS, ArrayList<Any>())
             }
         })
     }
@@ -354,23 +351,23 @@ private constructor() : Serializable, DatabaseInteractor {
 
         // Check on it is my post
         if (post.uid == userId) {
-            callback.callBack(FAIL, null)
+            callback(Constants.FAIL, null)
         } else {
             val usersRef = dataBaseRef().child("favorites").child(post.id!!).child(userId)
             usersRef.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     val favorite = dataSnapshot.getValue<Favorite>(Favorite::class.java)
                     if (favorite == null) {
-                        callback.callBack(SUCCESS, false)
+                        callback(Constants.SUCCESS, false)
                     } else {
                         // It does not matter the favorite level now
-                        callback.callBack(SUCCESS, true)
+                        callback(Constants.SUCCESS, true)
                     }
                 }
 
                 override fun onCancelled(databaseError: DatabaseError) {
                     Log.w(TAG, "getUser:onCancelled", databaseError.toException())
-                    callback.callBack(FAIL, null)
+                    callback(Constants.FAIL, null)
                 }
             })
         }

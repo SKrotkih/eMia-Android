@@ -121,7 +121,7 @@ class PhotosManager {
     private fun launchCamera() {
         val intent = Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE)
         file = outputMediaFile
-        uri = FileProvider.getUriForFile(this.parentActivity, this.parentActivity!!.applicationContext.packageName + ".dk.coded.emia.provider", file)
+        uri = FileProvider.getUriForFile(this.parentActivity!!, this.parentActivity!!.applicationContext.packageName + ".dk.coded.emia.provider", file!!)
         intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, uri)
         this.parentActivity!!.startActivityForResult(intent, CAMERA_TAKE_REQUEST)
     }
@@ -148,7 +148,7 @@ class PhotosManager {
                 GlideApp.with(this.parentActivity!!.applicationContext).asBitmap()
                         .load(ImageFilePath.getPath(this.parentActivity!!.applicationContext, selectedImage!!))
                         .override(PHOTO_MAX_WIDTH, PHOTO_MAX_HEIGHT)
-                        .fitCenter().into<BaseTarget>(bs)
+                        .fitCenter().into<BaseTarget<Bitmap>>(bs)
             }
             CAMERA_TAKE_REQUEST -> {
                 val bs = object : BaseTarget<Bitmap>() {
@@ -165,7 +165,7 @@ class PhotosManager {
                 GlideApp.with(this.parentActivity!!.applicationContext).asBitmap()
                         .load(file!!.absolutePath)
                         .override(PHOTO_MAX_WIDTH, PHOTO_MAX_HEIGHT)
-                        .fitCenter().into<BaseTarget>(bs)
+                        .fitCenter().into<BaseTarget<Bitmap>>(bs)
             }
         }
     }
@@ -174,8 +174,8 @@ class PhotosManager {
     // Permissions
     //
 
-    private fun findUnAskedPermissions(wanted: ArrayList<String>): ArrayList<*> {
-        val result = ArrayList()
+    private fun findUnAskedPermissions(wanted: ArrayList<String>): ArrayList<String> {
+        val result: ArrayList<String> = ArrayList()
 
         for (perm in wanted) {
             if (!hasPermission(perm)) {

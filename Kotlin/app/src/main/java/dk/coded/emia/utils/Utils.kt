@@ -59,7 +59,7 @@ object Utils {
 
     fun getPhotoUrlFromStorage(userID: String): String {
         val path = String.format("%s.jpg", userID)
-        return String.format("%s%%2F%s?alt=media", Companion.getFIREBASE_STORAGE(), path)
+        return String.format("%s%%2F%s?alt=media", Constants.FIREBASE_STORAGE, path)
     }
 
     fun isAppIsInBackground(context: Context): Boolean {

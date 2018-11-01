@@ -64,7 +64,7 @@ class UserObserver private constructor() {
             val progress = ProgressBarHandler(context)
             progress.show()
             val r = {
-                mInteractor.getAllUsers({ status: Int, data: Any ->
+                mInteractor.getAllUsers({ status: Int, data: Any? ->
                     progress.hide()
                     val users = data as ArrayList<User>
                     for (item in users) {
@@ -151,13 +151,13 @@ class UserObserver private constructor() {
             override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String) {
                 // A new user has been added
                 val user = dataSnapshot.getValue<User>(User::class.java)
-                callback.addUser(user)
+                callback.addUser(user!!)
             }
 
             override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildName: String) {
                 // A user has changed
                 val newUser = dataSnapshot.getValue<User>(User::class.java)
-                callback.updateUser(newUser)
+                callback.updateUser(newUser!!)
             }
 
             override fun onChildRemoved(dataSnapshot: DataSnapshot) {
@@ -169,7 +169,7 @@ class UserObserver private constructor() {
             override fun onChildMoved(dataSnapshot: DataSnapshot, previousChildName: String) {
                 // A comment has changed position
                 val movedUser = dataSnapshot.getValue<User>(User::class.java)
-                callback.moveUser(movedUser)
+                callback.moveUser(movedUser!!)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {

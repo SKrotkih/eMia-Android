@@ -46,9 +46,6 @@ import butterknife.BindView
 import dk.coded.emia.utils.Utils
 
 import com.bumptech.glide.request.RequestOptions.bitmapTransform
-import dk.coded.emia.utils.Constants.Companion.CANCEL
-import dk.coded.emia.utils.Constants.Companion.FAIL
-import dk.coded.emia.utils.Constants.Companion.SUCCESS
 
 class PostDetailActivity : BaseActivity() {
     private var mAdapter: CommentAdapter? = null
@@ -149,8 +146,8 @@ class PostDetailActivity : BaseActivity() {
         val relativeTime = DateUtils.getRelativeTimeSpanString(created).toString()
         mCreatedTextView!!.setText(String.format("Published %s", relativeTime))
 
-        databaseInteractor!!.getUser(post.uid!!, { status: Int, data: Any ->
-            if (status == Companion.getSUCCESS()) {
+        databaseInteractor!!.getUser(post.uid!!, { status: Int, data: Any? ->
+            if (status == Constants.SUCCESS) {
                 val user = data as User
                 mAuthorView!!.text = user.username
             }
@@ -158,8 +155,8 @@ class PostDetailActivity : BaseActivity() {
 
         mContext = this
 
-        databaseInteractor!!.downloadPhoto(this, post.id!!, { status: Int, data: Any ->
-            if (status == Companion.getSUCCESS()) {
+        databaseInteractor!!.downloadPhoto(this, post.id!!, { status: Int, data: Any? ->
+            if (status == Constants.SUCCESS) {
                 val uri = data as Uri
                 GlideApp.with(mContext!!.applicationContext)
                         .load(uri.toString())
@@ -168,8 +165,8 @@ class PostDetailActivity : BaseActivity() {
             }
         })
 
-        databaseInteractor!!.downloadPhoto(this, post.uid!!, { status: Int, data: Any ->
-            if (status == Companion.getSUCCESS()) {
+        databaseInteractor!!.downloadPhoto(this, post.uid!!, { status: Int, data: Any? ->
+            if (status == Constants.SUCCESS) {
                 val uri = data as Uri
                 GlideApp.with(mContext!!.applicationContext)
                         .load(uri.toString())
@@ -179,7 +176,7 @@ class PostDetailActivity : BaseActivity() {
         })
 
         // Listen for comments
-        mAdapter = CommentAdapter(this, post.id, { status: Int, data: Any ->
+        mAdapter = CommentAdapter(this, post.id!!, { status: Int, data: Any? ->
             // Auto Scroll to a new comment
             mCommentsRecycler!!.smoothScrollToPosition(0)
 
@@ -188,67 +185,64 @@ class PostDetailActivity : BaseActivity() {
     }
 
     private fun setUpStar() {
-        isItMyFavoritePost(mPost, object : BasicCallBack {
-            override fun callBack(status: Int, data: Any) {
-                if (status == Companion.getSUCCESS()) {
-                    val isFavorite = data as Boolean
-                    var resId = R.drawable.ic_star_border_black_24dp
-                    if (isFavorite) {
-                        resId = R.drawable.ic_star_black_24dp
-                    }
-                    mStarButton!!.setImageResource(resId)
-                    mStarButton!!.visibility = View.VISIBLE
-                } else if (status == Companion.getFAIL()) {
-                    mStarButton!!.visibility = View.GONE
+        isItMyFavoritePost(mPost, { status: Int, data: Any? ->
+            if (status == Constants.SUCCESS) {
+                val isFavorite = data as Boolean
+                var resId = R.drawable.ic_star_border_black_24dp
+                if (isFavorite) {
+                    resId = R.drawable.ic_star_black_24dp
                 }
+                mStarButton!!.setImageResource(resId)
+                mStarButton!!.visibility = View.VISIBLE
+            } else if (status == Constants.FAIL) {
+                mStarButton!!.visibility = View.GONE
             }
         })
     }
 
-
     // Press Like button handler
     private fun onStarButtonPressed() {
-        setUpPostAsMyFavorite({ status: Int, data: Any ->
-            if (status == Companion.getSUCCESS()) {
+        setUpPostAsMyFavorite({ status: Int, data: Any? ->
+            if (status == Constants.SUCCESS) {
                 if (data as Boolean) {
                     sendLikeTypePushNotification()
                 }
                 setUpStar()
-            } else if (status == Companion.getFAIL()) {
+            } else if (status == Constants.FAIL) {
 
             }
         })
     }
 
     private fun setUpPostAsMyFavorite(callback: BasicCallBack) {
-        isItMyFavoritePost(mPost, { status: Int, data: Any ->
-            if (status == Companion.getSUCCESS()) {
+        isItMyFavoritePost(mPost, { status: Int, data: Any? ->
+            if (status == Constants.SUCCESS) {
                 val isFavorite = data as Boolean
                 databaseInteractor!!.setUpMyFavoritePost(mPost!!, !isFavorite)
-                callback.callBack(Companion.getSUCCESS(), !isFavorite)
-            } else if (status == Companion.getFAIL()) {
-                callback.callBack(Companion.getFAIL(), null!!)
+                callback(Constants.SUCCESS, !isFavorite)
+            } else if (status == Constants.FAIL) {
+                callback(Constants.FAIL, null!!)
             }
         })
     }
 
     private fun isItMyFavoritePost(post: Post?, callback: BasicCallBack) {
-        databaseInteractor!!.isItMyFavoritePost(post!!, { status: Int, data: Any ->
-            if (status == Companion.getSUCCESS()) {
+        databaseInteractor!!.isItMyFavoritePost(post!!, { status: Int, data: Any? ->
+            if (status == Constants.SUCCESS) {
                 val isFavorite = data as Boolean
-                callback.callBack(Companion.getSUCCESS(), isFavorite)
-            } else if (status == Companion.getFAIL()) {
-                callback.callBack(Companion.getFAIL(), null!!)
+                callback(Constants.SUCCESS, isFavorite)
+            } else if (status == Constants.FAIL) {
+                callback(Constants.FAIL, null!!)
             }
         })
     }
 
     private fun sendLikeTypePushNotification() {
-        databaseInteractor!!.getUser(mPost!!.uid!!, { status: Int, data: Any ->
-            if (status == Companion.getSUCCESS()) {
+        databaseInteractor!!.getUser(mPost!!.uid!!, { status: Int, data: Any? ->
+            if (status == Constants.SUCCESS) {
                 val recipientUser = data as User
-                databaseInteractor!!.currentUser({ status2: Int, data2: Any ->
-                    if (status2 == Companion.getSUCCESS()) {
+                databaseInteractor!!.currentUser({ status2: Int, data2: Any? ->
+                    if (status2 == Constants.SUCCESS) {
                         val senderUser = data2 as User
                         RemoteNotifications.sendNotification(recipientUser, senderUser, Constants.NOTIFICATION_TYPE_LIKE, mPost!!.title)
                     }
@@ -275,14 +269,14 @@ class PostDetailActivity : BaseActivity() {
             return
         }
 
-        databaseInteractor!!.addCommentToPost(mPost!!, commentText, { status: Int, data: Any ->
-            if (status == Companion.getSUCCESS()) {
+        databaseInteractor!!.addCommentToPost(mPost!!, commentText, { status: Int, data: Any? ->
+            if (status == Constants.SUCCESS) {
                 // Clear the field
                 mCommentField!!.setText(null)
                 Utils.hideSoftKeyboard(this)
-            } else if (status == Companion.getFAIL()) {
+            } else if (status == Constants.FAIL) {
                 Toast.makeText(this, "Send message is failed", Toast.LENGTH_SHORT).show()
-            } else if (status == Companion.getCANCEL()) {
+            } else if (status == Constants.CANCEL) {
                 Toast.makeText(this, "Send message is cancelled", Toast.LENGTH_SHORT).show()
             }
         })
@@ -321,7 +315,7 @@ class PostDetailActivity : BaseActivity() {
 
                     Collections.sort(mComments) { c1, c2 -> if (c1.created < c2.created) 1 else -1 }
 
-                    collback.callBack(0, null!!)
+                    collback(0, null!!)
 
                     notifyItemInserted(0)
                     // [END_EXCLUDE]
@@ -397,8 +391,8 @@ class PostDetailActivity : BaseActivity() {
             holder.bodyView.text = comment.text
 
             val databaseInteractor = DatabaseFactory.databaseInteractor
-            databaseInteractor.downloadPhoto(null!!, comment.uid!!, { status: Int, data: Any ->
-                if (status == Companion.getSUCCESS()) {
+            databaseInteractor.downloadPhoto(null!!, comment.uid!!, { status: Int, data: Any? ->
+                if (status == Constants.SUCCESS) {
                     val uri = data as Uri
                     GlideApp.with(mContext.applicationContext)
                             .load(uri.toString())
@@ -422,8 +416,8 @@ class PostDetailActivity : BaseActivity() {
 
     private fun sendEmail() {
 
-        databaseInteractor!!.getUser(mPost!!.uid!!, { status: Int, data: Any ->
-            if (status == Companion.getSUCCESS()) {
+        databaseInteractor!!.getUser(mPost!!.uid!!, { status: Int, data: Any? ->
+            if (status == Constants.SUCCESS) {
                 val user = data as User
 
                 val TO = user.email

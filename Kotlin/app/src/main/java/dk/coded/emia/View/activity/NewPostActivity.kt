@@ -29,6 +29,7 @@ import dk.coded.emia.model.interactor.DatabaseFactory
 import dk.coded.emia.model.interactor.DatabaseInteractor
 import dk.coded.emia.R
 import dk.coded.emia.utils.Alerts
+import dk.coded.emia.utils.Constants
 import dk.coded.emia.utils.PhotosManager
 import dk.coded.emia.utils.PhotosManagerDelegate
 import dk.coded.emia.utils.Constants.Companion.CANCEL
@@ -114,7 +115,7 @@ class NewPostActivity : BaseActivity(), View.OnClickListener, PhotosManagerDeleg
 
         if (photoBitmap == null) {
             Alerts.alertOk(this, "", resources.getString(R.string.add_photo), { state, data ->
-                if (state == Companion.getSUCCESS()) {
+                if (state == Constants.SUCCESS) {
                     showPhotoDialog()
                 }
             })
@@ -128,21 +129,21 @@ class NewPostActivity : BaseActivity(), View.OnClickListener, PhotosManagerDeleg
         val post = Post(title, body, photoBitmap!!)
 
         showProgressDialog()
-        databaseInteractor!!.addPost(post, { status: Int, data: Any ->
+        databaseInteractor!!.addPost(post, { status: Int, data: Any? ->
             hideProgressDialog()
-            if (status == Companion.getSUCCESS()) {
+            if (status == Constants.SUCCESS) {
                 // Finish this Activity, back to the stream
                 setEditingEnabled(true)
                 finish()
                 // [END_EXCLUDE]
-            } else if (status == Companion.getFAIL()) {
+            } else if (status == Constants.FAIL) {
                 val errorDescription = data as String
                 // User is null, error out
                 Log.e(TAG, errorDescription)
                 Toast.makeText(this@NewPostActivity,
                         "Error: could not fetch user.",
                         Toast.LENGTH_SHORT).show()
-            } else if (status == Companion.getCANCEL()) {
+            } else if (status == Constants.CANCEL) {
                 // [START_EXCLUDE]
                 setEditingEnabled(true)
                 // [END_EXCLUDE]

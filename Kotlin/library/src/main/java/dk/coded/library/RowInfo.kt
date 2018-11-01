@@ -6,13 +6,13 @@ import android.os.Parcelable
 import java.util.ArrayList
 
 internal class RowInfo : Parcelable {
-    private val items: MutableList<RowItem>
+    val _items: MutableList<RowItem>
     val rowHeight: Int
     val spaceLeft: Float
 
     constructor(rowHeight: Int, items: MutableList<RowItem>, spaceLeft: Float) {
         this.rowHeight = rowHeight
-        this.items = items
+        this._items = items
         this.spaceLeft = spaceLeft
     }
 
@@ -21,16 +21,16 @@ internal class RowInfo : Parcelable {
         spaceLeft = `in`.readFloat()
         val totalItems = `in`.readInt()
 
-        items = ArrayList()
+        _items = ArrayList()
         val classLoader = AsymmetricItem::class.java!!.getClassLoader()
 
         for (i in 0 until totalItems) {
-            items.add(RowItem(`in`.readInt(), `in`.readParcelable<Parcelable>(classLoader) as AsymmetricItem))
+            _items.add(RowItem(`in`.readInt(), `in`.readParcelable<Parcelable>(classLoader) as AsymmetricItem))
         }
     }
 
     fun getItems(): List<RowItem> {
-        return items
+        return _items
     }
 
     override fun describeContents(): Int {
@@ -40,9 +40,9 @@ internal class RowInfo : Parcelable {
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeInt(rowHeight)
         dest.writeFloat(spaceLeft)
-        dest.writeInt(items.size)
+        dest.writeInt(_items.size)
 
-        for (rowItem in items) {
+        for (rowItem in _items) {
             dest.writeInt(rowItem.index)
             dest.writeParcelable(rowItem.item, 0)
         }
@@ -50,12 +50,13 @@ internal class RowInfo : Parcelable {
 
     companion object {
 
+        @JvmField
         val CREATOR: Parcelable.Creator<RowInfo> = object : Parcelable.Creator<RowInfo> {
             override fun createFromParcel(`in`: Parcel): RowInfo {
                 return RowInfo(`in`)
             }
 
-            override fun newArray(size: Int): Array<RowInfo> {
+            override fun newArray(size: Int): Array<RowInfo?> {
                 return arrayOfNulls(size)
             }
         }

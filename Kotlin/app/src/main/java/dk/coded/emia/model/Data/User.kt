@@ -14,9 +14,9 @@ import dk.coded.emia.utils.Utils
 @IgnoreExtraProperties
 class User {
 
-    var id: String
-    var username: String
-    var email: String
+    var id: String = ""
+    var username: String = ""
+    var email: String = ""
     var address: String? = null
     var gender: Int? = null
     var yearbirth: Int? = null
@@ -24,6 +24,20 @@ class User {
     var tokenIOS: String? = null
     // [END post_to_map]
 
+    constructor() {
+        // Default constructor required for calls to DataSnapshot.getValue(User.class)
+    }
+
+    constructor(id: String, name: String, email: String) {
+        this.id = id
+        this.username = name
+        this.email = email
+        this.address = null
+        this.yearbirth = null
+        this.gender = null
+        this.tokenAndroid = null
+        this.tokenIOS = null
+    }
 
     val iosTokens: Array<String>?
         @Exclude
@@ -51,21 +65,6 @@ class User {
         @Exclude
         get() = Utils.getPhotoUrlFromStorage(id)
 
-    constructor() {
-        // Default constructor required for calls to DataSnapshot.getValue(User.class)
-    }
-
-    constructor(id: String, name: String, email: String) {
-        this.id = id
-        this.username = name
-        this.email = email
-        this.address = null
-        this.yearbirth = null
-        this.gender = null
-        this.tokenAndroid = null
-        this.tokenIOS = null
-    }
-
     // [START post_to_map]
     @Exclude
     fun toMap(): Map<String, Any> {
@@ -73,11 +72,11 @@ class User {
         result[Constants.Fields.User.id] = id
         result[Constants.Fields.User.username] = username
         result[Constants.Fields.User.email] = email
-        result[Constants.Fields.User.yearbirth] = if (yearbirth == null) 0 else yearbirth
-        result[Constants.Fields.User.gender] = if (gender == null) -1 else gender
-        result[Constants.Fields.User.address] = if (address == null) "" else address
-        result[Constants.Fields.User.tokenAndroid] = if (tokenAndroid == null) "" else tokenAndroid
-        result[Constants.Fields.User.tokenIOS] = if (tokenIOS == null) "" else tokenIOS
+        result[Constants.Fields.User.yearbirth] = if (yearbirth == null) 0 else yearbirth!!
+        result[Constants.Fields.User.gender] = if (gender == null) -1 else gender!!
+        result[Constants.Fields.User.address] = if (address == null) "" else address!!
+        result[Constants.Fields.User.tokenAndroid] = if (tokenAndroid == null) "" else tokenAndroid!!
+        result[Constants.Fields.User.tokenIOS] = if (tokenIOS == null) "" else tokenIOS!!
 
         return result
     }

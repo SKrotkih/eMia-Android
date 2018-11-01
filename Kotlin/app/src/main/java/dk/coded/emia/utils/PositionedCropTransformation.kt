@@ -17,8 +17,8 @@ import com.bumptech.glide.load.resource.bitmap.TransformationUtils.PAINT_FLAGS
 
 class PositionedCropTransformation(@FloatRange(from = 0.0, to = 1.0) xPercentage: Float, @FloatRange(from = 0.0, to = 1.0) yPercentage: Float) : BitmapTransformation() {
 
-    private val xPercentage = 0.5f
-    private val yPercentage = 0.5f
+    private var xPercentage = 0.5f
+    private var yPercentage = 0.5f
 
 
     init {

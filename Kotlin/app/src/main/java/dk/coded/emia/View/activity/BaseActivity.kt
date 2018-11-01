@@ -2,6 +2,7 @@ package dk.coded.emia.View.activity
 
 import android.app.Activity
 import android.app.ProgressDialog
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -51,13 +52,13 @@ open class BaseActivity : AppCompatActivity() {
 
         if (mNotificationListening!!) {
             val filter = IntentFilter(Constants.NOTIFICATION_LOCAL_BROADCAST)
-            LocalBroadcastManager.getInstance(mActivity).registerReceiver(notificationReceiver, filter)
+            LocalBroadcastManager.getInstance(mActivity!!).registerReceiver((notificationReceiver as BroadcastReceiver)!!, filter)
         }
     }
 
     public override fun onPause() {
         if (mNotificationListening!!) {
-            LocalBroadcastManager.getInstance(mActivity).unregisterReceiver(notificationReceiver)
+            LocalBroadcastManager.getInstance(mActivity!!).unregisterReceiver((notificationReceiver as BroadcastReceiver)!!)
         }
         super.onPause()
     }
@@ -85,7 +86,7 @@ open class BaseActivity : AppCompatActivity() {
         if (mFocusView == null) {
             return
         }
-        val imm = getSystemService(this.INPUT_METHOD_SERVICE) as InputMethodManager
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(mFocusView!!.windowToken, 0)
         mFocusView = null
     }

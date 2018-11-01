@@ -16,7 +16,7 @@ class Comment : Serializable {
     var uid: String? = null
     var postid: String? = null
     var author: String? = null
-    var text: String
+    var text: String = ""
     var created: Long = 0
 
     constructor() {
@@ -32,10 +32,10 @@ class Comment : Serializable {
     @Exclude
     fun toMap(): Map<String, Any> {
         val result = HashMap<String, Any>()
-        result[Constants.Fields.Comment.id] = id
-        result[Constants.Fields.Comment.uid] = uid
-        result[Constants.Fields.Comment.postid] = postid
-        result[Constants.Fields.Comment.author] = author
+        result[Constants.Fields.Comment.id] = id!!
+        result[Constants.Fields.Comment.uid] = uid!!
+        result[Constants.Fields.Comment.postid] = postid!!
+        result[Constants.Fields.Comment.author] = author!!
         result[Constants.Fields.Comment.text] = text
         result[Constants.Fields.Comment.created] = created
         return result

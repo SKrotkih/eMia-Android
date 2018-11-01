@@ -2,14 +2,15 @@ package dk.coded.library
 
 import android.content.Context
 import android.database.DataSetObserver
+import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ListAdapter
 import android.widget.WrapperListAdapter
 
-class AsymmetricGridViewAdapter(context: Context, listView: AsymmetricGridView,
-                                private val wrappedAdapter: ListAdapter) : BaseAdapter(), AGVBaseAdapter<*>, WrapperListAdapter {
+class AsymmetricGridViewAdapter(context: Context, listView: AsymmetricGridView, private val wrappedAdapter: ListAdapter) :
+        BaseAdapter(), AGVBaseAdapter<RecyclerView.ViewHolder>, WrapperListAdapter {
     private val adapterImpl: AdapterImpl
 
     override val actualItemCount: Int
@@ -34,14 +35,14 @@ class AsymmetricGridViewAdapter(context: Context, listView: AsymmetricGridView,
         return wrappedAdapter.getItem(position) as AsymmetricItem
     }
 
-    override fun onCreateAsymmetricViewHolder(
-            position: Int, parent: ViewGroup, viewType: Int): AsymmetricViewHolder<*> {
-        return AsymmetricViewHolder<ViewHolder>(wrappedAdapter.getView(position, null, parent))
+    override fun onBindAsymmetricViewHolder(holder: AsymmetricViewHolder<RecyclerView.ViewHolder>, parent: ViewGroup, position: Int) {
+        wrappedAdapter.getView(position, holder.itemView, parent)
+
     }
 
-    override fun onBindAsymmetricViewHolder(
-            holder: AsymmetricViewHolder<*>, parent: ViewGroup, position: Int) {
-        wrappedAdapter.getView(position, holder.itemView, parent)
+    override fun onCreateAsymmetricViewHolder(
+            position: Int, parent: ViewGroup, viewType: Int): AsymmetricViewHolder<RecyclerView.ViewHolder> {
+        return AsymmetricViewHolder<RecyclerView.ViewHolder>(wrappedAdapter.getView(position, null, parent))
     }
 
     override fun getItemId(position: Int): Long {

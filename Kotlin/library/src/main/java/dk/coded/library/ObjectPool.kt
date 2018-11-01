@@ -8,12 +8,11 @@ import java.util.Stack
 internal class ObjectPool<T> : Parcelable {
     var stack = Stack<T>()
     var factory: PoolObjectFactory<T>? = null
-    var stats: PoolStats
+    var stats = PoolStats()
 
     constructor(`in`: Parcel) {}
 
     constructor() {
-        stats = PoolStats()
     }
 
     constructor(factory: PoolObjectFactory<T>) {
@@ -72,13 +71,14 @@ internal class ObjectPool<T> : Parcelable {
 
     companion object {
 
+        @JvmField
         val CREATOR: Parcelable.Creator<ObjectPool<*>> = object : Parcelable.Creator<ObjectPool<*>> {
 
             override fun createFromParcel(`in`: Parcel): ObjectPool<*> {
-                return ObjectPool(`in`)
+                return ObjectPool<Parcel>(`in`)
             }
 
-            override fun newArray(size: Int): Array<ObjectPool<*>> {
+            override fun newArray(size: Int): Array<ObjectPool<*>?> {
                 return arrayOfNulls(size)
             }
         }

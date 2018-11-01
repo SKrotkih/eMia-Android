@@ -35,7 +35,6 @@ import okhttp3.RequestBody
 import okhttp3.Response
 
 import com.bumptech.glide.request.RequestOptions.bitmapTransform
-import dk.coded.emia.utils.Constants.SUCCESS
 
 object RemoteNotifications {
 
@@ -51,7 +50,7 @@ object RemoteNotifications {
                 Constants.NOTIFICATION_TYPE_LIKE -> bodyNotification = Constants.NOTIFICATION_LIKE_BODY + " '" + body as String + "'"
             }
 
-            val tokensIOS = recipient.getIOSTokens()
+            val tokensIOS = recipient.iosTokens
             val tokensAndroid = recipient.androidTokens
 
             //
@@ -175,8 +174,8 @@ object RemoteNotifications {
         if (URLUtil.isValidUrl(url)) {
             Glide.with(activity).load(url).into(ivNotificationImage)
         } else {
-            DatabaseFactory.databaseInteractor.downloadPhoto(activity, senderID, { status: Int, data: Any ->
-                if (status == SUCCESS) {
+            DatabaseFactory.databaseInteractor.downloadPhoto(activity, senderID, { status: Int, data: Any? ->
+                if (status == Constants.SUCCESS) {
                     val uri = data as Uri
                     GlideApp.with(activity.applicationContext)
                             .load(uri.toString())
@@ -220,8 +219,8 @@ object RemoteNotifications {
     }
 
     private fun browsePost(activity: Activity, postId: String) {
-        DatabaseFactory.databaseInteractor.getPost(postId, { status: Int, data: Any ->
-            if (status == SUCCESS) {
+        DatabaseFactory.databaseInteractor.getPost(postId, { status: Int, data: Any? ->
+            if (status == Constants.SUCCESS) {
                 val intent = Intent(activity, PostDetailActivity::class.java)
                 val post = data as Post
                 intent.putExtra("post", post)

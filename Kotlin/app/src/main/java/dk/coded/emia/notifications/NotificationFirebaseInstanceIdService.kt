@@ -13,14 +13,11 @@ import dk.coded.emia.utils.Constants
 import dk.coded.emia.utils.Utils
 
 import android.content.ContentValues.TAG
-import dk.coded.emia.utils.Constants.CANCEL
-import dk.coded.emia.utils.Constants.FAIL
-import dk.coded.emia.utils.Constants.SUCCESS
 
 class NotificationFirebaseInstanceIdService : FirebaseInstanceIdService() {
     private var databaseInteractor: DatabaseInteractor? = null
 
-    internal var context: Context
+    internal var context: Context? = null
 
     /**
      * Called if InstanceID token is updated. This may occur if the security of
@@ -32,15 +29,15 @@ class NotificationFirebaseInstanceIdService : FirebaseInstanceIdService() {
         val refreshedToken = FirebaseInstanceId.getInstance().token
         context = this
         databaseInteractor = DatabaseFactory.databaseInteractor
-        databaseInteractor!!.currentUser({ status: Int, data: Any ->
-            if (status == SUCCESS) {
+        databaseInteractor!!.currentUser({ status: Int, data: Any? ->
+            if (status == Constants.SUCCESS) {
                 val user = data as User
                 user.tokenAndroid = refreshedToken
-                databaseInteractor!!.updateUser(user, { result: Int, `object`: Any ->
-                    if (result == SUCCESS) {
-                        Utils.setStringPreference(context, Constants.EXTRA_TOKEN, refreshedToken)
-                    } else if (result == FAIL) {
-                    } else if (result == CANCEL) {
+                databaseInteractor!!.updateUser(user, { result: Int, `object`: Any? ->
+                    if (result == Constants.SUCCESS) {
+                        Utils.setStringPreference(context!!, Constants.EXTRA_TOKEN, refreshedToken!!)
+                    } else if (result == Constants.FAIL) {
+                    } else if (result == Constants.CANCEL) {
                     }
                 })
             }

@@ -23,6 +23,7 @@ import dk.coded.emia.utils.PositionedCropTransformation
 
 import android.widget.ImageView.ScaleType.MATRIX
 import com.bumptech.glide.request.RequestOptions.bitmapTransform
+import dk.coded.emia.utils.Constants
 import dk.coded.emia.utils.Constants.Companion.TRANSPARENT_COLOR
 
 /**
@@ -58,7 +59,7 @@ class PhotoBrowserActivity : BaseActivity() {
 
         mBackButton!!.setOnClickListener { view -> this.finish() }
 
-        navBar!!.setBackgroundColor(Color.parseColor(Companion.getTRANSPARENT_COLOR()))
+        navBar!!.setBackgroundColor(Color.parseColor(Constants.TRANSPARENT_COLOR))
         val intent = intent
         mPost = intent.getSerializableExtra("post") as Post
 
@@ -75,7 +76,7 @@ class PhotoBrowserActivity : BaseActivity() {
         mTitleTextView!!.text = mPost!!.title
         //mPhotoImageView.setScaleType(MATRIX);
 
-        databaseInteractor!!.downloadPhoto(this, mPost!!.id!!, { status: Int, data: Any ->
+        databaseInteractor!!.downloadPhoto(this, mPost!!.id!!, { status: Int, data: Any? ->
             val uri = data as Uri
             GlideApp.with(mContext!!.applicationContext)
                     .load(uri.toString())
