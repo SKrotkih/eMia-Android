@@ -14,7 +14,6 @@ import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 
-import butterknife.ButterKnife
 import dk.coded.emia.model.interactor.DatabaseFactory
 import dk.coded.emia.model.interactor.DatabaseInteractor
 import dk.coded.emia.model.Data.User
@@ -23,41 +22,40 @@ import dk.coded.emia.R
 import butterknife.BindView
 import dk.coded.emia.utils.Constants
 
-import dk.coded.emia.utils.Constants.Companion.SUCCESS
+import kotlinx.android.synthetic.main.activity_sign_in.*
+import kotlinx.android.synthetic.main.main_nav_header.*
 
 class SignInActivity : BaseActivity(), View.OnClickListener {
 
-    private var interactor: DatabaseInteractor? = null
+    private val interactor: DatabaseInteractor
+        get() = DatabaseFactory.databaseInteractor
 
-    @BindView(R.id.field_password)
-    internal var mPasswordField: EditText? = null
-    @BindView(R.id.field_email)
-    internal var mEmailField: EditText? = null
-    @BindView(R.id.button_sign_in)
-    internal var mSignInButton: Button? = null
-    @BindView(R.id.button_sign_up)
-    internal var mSignUpButton: Button? = null
-    @BindView(R.id.nav_title)
-    internal var titleTextView: TextView? = null
-    @BindView(R.id.star_button)
-    internal var starButton: ImageButton? = null
+    private val mPasswordField: EditText
+        get() = field_password
+    private val mEmailField: EditText
+        get() = field_email
+    private val mSignInButton: Button
+        get() = button_sign_in
+    private val mSignUpButton: Button
+        get() = button_sign_up
+    private val titleTextView: TextView
+        get() = nav_title
+    private val starButton: ImageButton
+        get() = star_button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_in)
-        ButterKnife.bind(this)
 
-        interactor = DatabaseFactory.databaseInteractor
+        starButton.visibility = View.GONE
 
-        starButton!!.visibility = View.GONE
-
-        titleTextView!!.text = resources.getString(R.string.sign_in_title)
+        titleTextView.text = resources.getString(R.string.sign_in_title)
 
         // Click listeners
-        mSignInButton!!.setOnClickListener { view -> signIn() }
-        mSignUpButton!!.setOnClickListener { view -> signUp() }
+        mSignInButton.setOnClickListener { view -> signIn() }
+        mSignUpButton.setOnClickListener { view -> signUp() }
 
-        showKeyboard(mEmailField!!)
+        showKeyboard(mEmailField)
     }
 
     override fun onClick(v: View) {}
@@ -66,7 +64,7 @@ class SignInActivity : BaseActivity(), View.OnClickListener {
         super.onStart()
 
         // Check auth on Activity start
-        if (interactor!!.isUserSignedIn!!) {
+        if (interactor.isUserSignedIn!!) {
             onAuthSuccess()
         }
     }
@@ -77,10 +75,10 @@ class SignInActivity : BaseActivity(), View.OnClickListener {
         if (!validateForm()) {
             return
         }
-        val email = mEmailField!!.text.toString()
-        val password = mPasswordField!!.text.toString()
+        val email = mEmailField.text.toString()
+        val password = mPasswordField.text.toString()
         showProgressDialog()
-        interactor!!.signIn(email, password, this, { status, user ->
+        interactor.signIn(email, password, this, { status, user ->
             hideProgressDialog()
             if (status == Constants.SUCCESS) {
                 onAuthSuccess()
@@ -98,10 +96,10 @@ class SignInActivity : BaseActivity(), View.OnClickListener {
         if (!validateForm()) {
             return
         }
-        val email = mEmailField!!.text.toString()
-        val password = mPasswordField!!.text.toString()
+        val email = mEmailField.text.toString()
+        val password = mPasswordField.text.toString()
         showProgressDialog()
-        interactor!!.signUp(email, password, this, { status, user ->
+        interactor.signUp(email, password, this, { status, user ->
             hideProgressDialog()
             if (status == Constants.SUCCESS) {
                 onAuthSuccess()
@@ -113,8 +111,8 @@ class SignInActivity : BaseActivity(), View.OnClickListener {
     }
 
     private fun onAuthSuccess() {
-        val userId = interactor!!.currentUserId
-        val userEmail = interactor!!.currentUserEmail
+        val userId = interactor.currentUserId
+        val userEmail = interactor.currentUserEmail
 
         val username = usernameFromEmail(userEmail)
 
@@ -136,21 +134,21 @@ class SignInActivity : BaseActivity(), View.OnClickListener {
 
     private fun validateForm(): Boolean {
         var result = true
-        if (TextUtils.isEmpty(mEmailField!!.text.toString())) {
-            mEmailField!!.error = resources.getString(R.string.field_required)
+        if (TextUtils.isEmpty(mEmailField.text.toString())) {
+            mEmailField.error = resources.getString(R.string.field_required)
             result = false
         } else {
-            mEmailField!!.error = null
+            mEmailField.error = null
         }
-        val password = mPasswordField!!.text.toString()
+        val password = mPasswordField.text.toString()
         if (TextUtils.isEmpty(password)) {
-            mPasswordField!!.error = resources.getString(R.string.field_required)
+            mPasswordField.error = resources.getString(R.string.field_required)
             result = false
         } else if (password.length < 7) {
-            mPasswordField!!.error = resources.getString(R.string.password_too_short)
+            mPasswordField.error = resources.getString(R.string.password_too_short)
             result = false
         } else {
-            mPasswordField!!.error = null
+            mPasswordField.error = null
         }
 
         return result
@@ -159,7 +157,7 @@ class SignInActivity : BaseActivity(), View.OnClickListener {
     // [START basic_write]
     private fun writeNewUser(userId: String, name: String, email: String) {
         val user = User(userId, name, email)
-        interactor!!.addUser(user)
+        interactor.addUser(user)
     }
 
     companion object {
