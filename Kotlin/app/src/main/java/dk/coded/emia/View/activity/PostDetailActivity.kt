@@ -24,7 +24,6 @@ import android.widget.Toast
 import com.github.chrisbanes.photoview.PhotoView
 import com.google.firebase.database.DatabaseError
 
-import butterknife.ButterKnife
 import dk.coded.emia.View.GlideApp
 import dk.coded.emia.model.Data.User
 import dk.coded.emia.notifications.RemoteNotifications
@@ -42,41 +41,46 @@ import dk.coded.emia.R
 import java.util.ArrayList
 import java.util.Collections
 import java.util.Comparator
-import butterknife.BindView
 import dk.coded.emia.utils.Utils
 
 import com.bumptech.glide.request.RequestOptions.bitmapTransform
+
+import kotlinx.android.synthetic.main.activity_post_detail.*
+import kotlinx.android.synthetic.main.post_detail_nav_header.*
+import kotlinx.android.synthetic.main.notification.*
+import kotlinx.android.synthetic.main.include_post_author.*
+import kotlinx.android.synthetic.main.include_post_text.*
 
 class PostDetailActivity : BaseActivity() {
     private var mAdapter: CommentAdapter? = null
     internal var activity: Activity = this@PostDetailActivity
 
-    @BindView(R.id.post_author)
-    internal var mAuthorView: TextView? = null
-    @BindView(R.id.post_body)
-    internal var mBodyView: TextView? = null
-    @BindView(R.id.photoImageView)
-    internal var mPhotoImageView: PhotoView? = null
-    @BindView(R.id.field_comment_text)
-    internal var mCommentField: EditText? = null
-    @BindView(R.id.post_comment_button)
-    internal var mCommentButton: Button? = null
-    @BindView(R.id.recycler_comments)
-    internal var mCommentsRecycler: RecyclerView? = null
-    @BindView(R.id.back_button)
-    internal var mBackButton: ImageButton? = null
-    @BindView(R.id.star_button)
-    internal var mStarButton: ImageButton? = null
-    @BindView(R.id.post_author_photo)
-    internal var mPhotoAvatarImageView: ImageView? = null
-    @BindView(R.id.sendEmailButton)
-    internal var mSendEmailButton: Button? = null
-    @BindView(R.id.post_date_tv)
-    internal var mCreatedTextView: TextView? = null
-    @BindView(R.id.nav_bar_title_tv)
-    internal var mTitleTextView: TextView? = null
-    @BindView(R.id.rlNotification)
-    internal var rlNotification: RelativeLayout? = null
+    private val mAuthorView: TextView
+        get() = post_author
+    private val mBodyView: TextView
+        get() = post_body
+    private val mPhotoImageView: PhotoView
+        get() = photoImageView
+    private val mCommentField: EditText
+        get() = field_comment_text
+    private val mCommentButton: Button
+        get() = post_comment_button
+    private val mCommentsRecycler: RecyclerView
+        get() = recycler_comments
+    private val mBackButton: ImageButton
+        get() = back_button
+    private val mStarButton: ImageButton
+        get() = star_button
+    private val mPhotoAvatarImageView: ImageView
+        get() = post_author_photo
+    private val mSendEmailButton: Button
+        get() = sendEmailButton
+    private val mCreatedTextView: TextView
+        get() = post_date_tv
+    private val mTitleTextView: TextView
+        get() = nav_bar_title_tv
+    private val rlNotification: RelativeLayout
+        get() = layout_Notification
 
     private var mPost: Post? = null
     private var mContext: Context? = null
@@ -86,26 +90,25 @@ class PostDetailActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_post_detail)
-        ButterKnife.bind(this)
 
         val intent = intent
         mPost = intent.getSerializableExtra("post") as Post
 
         databaseInteractor = DatabaseFactory.databaseInteractor
-        mCommentsRecycler!!.layoutManager = LinearLayoutManager(this)
+        mCommentsRecycler.layoutManager = LinearLayoutManager(this)
 
         setUpButtonListeners()
 
         //prepareNotificationsListener(activity);
-        rlNotification!!.visibility = View.GONE
+        rlNotification.visibility = View.GONE
     }
 
     private fun setUpButtonListeners() {
-        mCommentButton!!.setOnClickListener { view -> sendComment() }
-        mBackButton!!.setOnClickListener { view -> finish() }
-        mStarButton!!.setOnClickListener { view -> onStarButtonPressed() }
-        mPhotoImageView!!.setOnClickListener { view -> photoPreview() }
-        mSendEmailButton!!.setOnClickListener { view -> sendEmail() }
+        mCommentButton.setOnClickListener { view -> sendComment() }
+        mBackButton.setOnClickListener { view -> finish() }
+        mStarButton.setOnClickListener { view -> onStarButtonPressed() }
+        mPhotoImageView.setOnClickListener { view -> photoPreview() }
+        mSendEmailButton.setOnClickListener { view -> sendEmail() }
     }
 
     override fun onResume() {
@@ -137,19 +140,19 @@ class PostDetailActivity : BaseActivity() {
     }
 
     private fun showData(post: Post) {
-        mTitleTextView!!.text = post.title
-        mBodyView!!.text = post.body
+        mTitleTextView.text = post.title
+        mBodyView.text = post.body
 
         setUpStar()
 
         val created = post.created * 1000
         val relativeTime = DateUtils.getRelativeTimeSpanString(created).toString()
-        mCreatedTextView!!.setText(String.format("Published %s", relativeTime))
+        mCreatedTextView.setText(String.format("Published %s", relativeTime))
 
         databaseInteractor!!.getUser(post.uid!!, { status: Int, data: Any? ->
             if (status == Constants.SUCCESS) {
                 val user = data as User
-                mAuthorView!!.text = user.username
+                mAuthorView.text = user.username
             }
         })
 
@@ -161,7 +164,7 @@ class PostDetailActivity : BaseActivity() {
                 GlideApp.with(mContext!!.applicationContext)
                         .load(uri.toString())
                         .apply(bitmapTransform(PositionedCropTransformation(1f, 0f)))
-                        .into(mPhotoImageView!!)
+                        .into(mPhotoImageView)
             }
         })
 
@@ -171,17 +174,17 @@ class PostDetailActivity : BaseActivity() {
                 GlideApp.with(mContext!!.applicationContext)
                         .load(uri.toString())
                         .apply(bitmapTransform(PositionedCropTransformation(1f, 0f)))
-                        .into(mPhotoAvatarImageView!!)
+                        .into(mPhotoAvatarImageView)
             }
         })
 
         // Listen for comments
         mAdapter = CommentAdapter(this, post.id!!, { status: Int, data: Any? ->
             // Auto Scroll to a new comment
-            mCommentsRecycler!!.smoothScrollToPosition(0)
+            mCommentsRecycler.smoothScrollToPosition(0)
 
         })
-        mCommentsRecycler!!.adapter = mAdapter
+        mCommentsRecycler.adapter = mAdapter
     }
 
     private fun setUpStar() {
@@ -192,10 +195,10 @@ class PostDetailActivity : BaseActivity() {
                 if (isFavorite) {
                     resId = R.drawable.ic_star_black_24dp
                 }
-                mStarButton!!.setImageResource(resId)
-                mStarButton!!.visibility = View.VISIBLE
+                mStarButton.setImageResource(resId)
+                mStarButton.visibility = View.VISIBLE
             } else if (status == Constants.FAIL) {
-                mStarButton!!.visibility = View.GONE
+                mStarButton.visibility = View.GONE
             }
         })
     }
@@ -263,7 +266,7 @@ class PostDetailActivity : BaseActivity() {
             return
         }
 
-        val commentText = mCommentField!!.text.toString()
+        val commentText = mCommentField.text.toString()
 
         if (commentText.isEmpty()) {
             return
@@ -272,7 +275,7 @@ class PostDetailActivity : BaseActivity() {
         databaseInteractor!!.addCommentToPost(mPost!!, commentText, { status: Int, data: Any? ->
             if (status == Constants.SUCCESS) {
                 // Clear the field
-                mCommentField!!.setText(null)
+                mCommentField.setText(null)
                 Utils.hideSoftKeyboard(this)
             } else if (status == Constants.FAIL) {
                 Toast.makeText(this, "Send message is failed", Toast.LENGTH_SHORT).show()

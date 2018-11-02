@@ -35,8 +35,11 @@ import dk.coded.emia.utils.PositionedCropTransformation
 
 import com.bumptech.glide.request.RequestOptions.bitmapTransform
 
-import butterknife.BindView
 import dk.coded.emia.utils.Constants
+
+import kotlinx.android.synthetic.main.activity_my_profile.*
+import kotlinx.android.synthetic.main.notification.*
+import kotlinx.android.synthetic.main.post_detail_nav_header.*
 
 /**
  * Created by oldman on 12/8/17.
@@ -44,34 +47,34 @@ import dk.coded.emia.utils.Constants
 
 class MyProfileActivity : BaseActivity(), View.OnClickListener, PhotosManagerDelegate {
 
-    @BindView(R.id.back_button)
-    internal var mBackButton: ImageButton? = null
-    @BindView(R.id.user_name_label)
-    internal var userNameTitleTextView: TextView? = null
-    @BindView(R.id.user_name_text)
-    internal var userNameTextView: EditText? = null
-    @BindView(R.id.user_email_label)
-    internal var userEmailTitleTextView: TextView? = null
-    @BindView(R.id.user_email_text)
-    internal var userEmailTextView: TextView? = null
-    @BindView(R.id.user_photo_label)
-    internal var userPhotoTitleTextView: TextView? = null
-    @BindView(R.id.user_photo)
-    internal var userPhotoImageView: ImageView? = null
-    @BindView(R.id.yerarbirth_spinner)
-    internal var userYearOfBirthSpinner: Spinner? = null
-    @BindView(R.id.gender_spinner)
-    internal var userGenderSpinner: Spinner? = null
-    @BindView(R.id.municipality_spinner)
-    internal var userMunicipalitySpinner: Spinner? = null
-    @BindView(R.id.fab_submit_post)
-    internal var mSubmitButton: FloatingActionButton? = null
-    @BindView(R.id.nav_bar_title_tv)
-    internal var titleEditText: TextView? = null
-    @BindView(R.id.star_button)
-    internal var starButton: ImageButton? = null
-    @BindView(R.id.rlNotification)
-    internal var rlNotification: RelativeLayout? = null
+    private val  mBackButton: ImageButton
+        get() = back_button
+    private val  userNameTitleTextView: TextView
+        get() = user_name_label
+    private val  userNameTextView: EditText
+        get() = user_name_text
+    private val  userEmailTitleTextView: TextView
+        get() = user_email_label
+    private val  userEmailTextView: TextView
+        get() = user_email_text
+    private val  userPhotoTitleTextView: TextView
+        get() = user_photo_label
+    private val  userPhotoImageView: ImageView
+        get() = user_photo
+    private val  userYearOfBirthSpinner: Spinner
+        get() = yerarbirth_spinner
+    private val  userGenderSpinner: Spinner
+        get() = gender_spinner
+    private val  userMunicipalitySpinner: Spinner
+        get() = municipality_spinner
+    private val  mSubmitButton: FloatingActionButton
+        get() = fab_submit_post
+    private val  titleEditText: TextView
+        get() = nav_bar_title_tv
+    private val  starButton: ImageButton
+        get() = star_button
+    private val  rlNotification: RelativeLayout
+        get() = layout_Notification
 
     private var photosManager: PhotosManager? = null
     private var databaseInteractor: DatabaseInteractor? = null
@@ -80,7 +83,7 @@ class MyProfileActivity : BaseActivity(), View.OnClickListener, PhotosManagerDel
     private val selectedMunicipality: String
         get() {
             val municips = Arrays.asList(*resources.getStringArray(R.array.municipalities_arrays))
-            val municipalityIndex = userMunicipalitySpinner!!.selectedItemPosition
+            val municipalityIndex = userMunicipalitySpinner.selectedItemPosition
             if (municipalityIndex > 0) {
                 val municipalityItem = municips[municipalityIndex].toString()
                 val tokens = StringTokenizer(municipalityItem, "|")
@@ -93,24 +96,23 @@ class MyProfileActivity : BaseActivity(), View.OnClickListener, PhotosManagerDel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_my_profile)
-        ButterKnife.bind(this)
 
-        titleEditText!!.text = resources.getString(R.string.my_profile_title)
+        titleEditText.text = resources.getString(R.string.my_profile_title)
 
         photosManager = PhotosManager()
 
         databaseInteractor = DatabaseFactory.databaseInteractor
 
-        userPhotoImageView!!.setOnClickListener { view -> changeMyPhoto() }
-        mBackButton!!.setOnClickListener { view -> finish() }
-        mSubmitButton!!.setOnClickListener { view -> submitProfile() }
+        userPhotoImageView.setOnClickListener { view -> changeMyPhoto() }
+        mBackButton.setOnClickListener { view -> finish() }
+        mSubmitButton.setOnClickListener { view -> submitProfile() }
 
         addItemsOnSpinnerYears()
         addItemsOnSpinnerMunicipality()
 
         //prepareNotificationsListener(this);
-        rlNotification!!.visibility = View.GONE
-        starButton!!.visibility = View.GONE
+        rlNotification.visibility = View.GONE
+        starButton.visibility = View.GONE
     }
 
     override fun onClick(v: View) {}
@@ -123,26 +125,26 @@ class MyProfileActivity : BaseActivity(), View.OnClickListener, PhotosManagerDel
             if (status == Constants.SUCCESS) {
                 val user = data as User
                 mUser = user
-                userNameTextView!!.setText(user.username)
-                userEmailTextView!!.text = user.email
+                userNameTextView.setText(user.username)
+                userEmailTextView.text = user.email
 
                 if (user.yearbirth != null && user.yearbirth!! > 0) {
                     val index = 2006 - user.yearbirth!!
-                    userYearOfBirthSpinner!!.setSelection(index)
+                    userYearOfBirthSpinner.setSelection(index)
                 } else {
-                    userYearOfBirthSpinner!!.setSelection(0)
+                    userYearOfBirthSpinner.setSelection(0)
                 }
                 if (user.gender != null) {
-                    userGenderSpinner!!.setSelection(user.gender!!)
+                    userGenderSpinner.setSelection(user.gender!!)
                 } else {
-                    userGenderSpinner!!.setSelection(0)
+                    userGenderSpinner.setSelection(0)
                 }
                 if (user.address != null && !user.address!!.isEmpty()) {
                     val municipalityId = user.address
                     val position = getMunicipalityIndexWith(municipalityId)
-                    userMunicipalitySpinner!!.setSelection(position!!)
+                    userMunicipalitySpinner.setSelection(position!!)
                 } else {
-                    userMunicipalitySpinner!!.setSelection(0)
+                    userMunicipalitySpinner.setSelection(0)
                 }
                 databaseInteractor!!.downloadPhoto(this@MyProfileActivity, user.id, { status2: Int, data2: Any? ->
                     if (status2 == Constants.SUCCESS) {
@@ -150,16 +152,16 @@ class MyProfileActivity : BaseActivity(), View.OnClickListener, PhotosManagerDel
                         GlideApp.with(thisContext.applicationContext)
                                 .load(uri.toString())
                                 .apply(bitmapTransform(PositionedCropTransformation(1f, 0f)))
-                                .into(userPhotoImageView!!)
+                                .into(userPhotoImageView)
                     }
                 })
             } else if (status == Constants.FAIL) {
-                userNameTextView!!.setText("")
-                userEmailTextView!!.text = ""
-                userPhotoImageView!!.setImageBitmap(null)
-                userYearOfBirthSpinner!!.setSelection(0)
-                userGenderSpinner!!.setSelection(0)
-                userMunicipalitySpinner!!.setSelection(0)
+                userNameTextView.setText("")
+                userEmailTextView.text = ""
+                userPhotoImageView.setImageBitmap(null)
+                userYearOfBirthSpinner.setSelection(0)
+                userGenderSpinner.setSelection(0)
+                userMunicipalitySpinner.setSelection(0)
             }
         }
     }
@@ -174,7 +176,7 @@ class MyProfileActivity : BaseActivity(), View.OnClickListener, PhotosManagerDel
         val fileName = databaseInteractor!!.currentUserId
         databaseInteractor!!.uploadPhotoBitmap(bitmap, fileName, { status: Int, data: Any? ->
             if (status == Constants.SUCCESS) {
-                userPhotoImageView!!.setImageBitmap(bitmap)
+                userPhotoImageView.setImageBitmap(bitmap)
             } else if (status == Constants.FAIL) {
             }
         })
@@ -184,13 +186,13 @@ class MyProfileActivity : BaseActivity(), View.OnClickListener, PhotosManagerDel
         if (mUser == null) {
             return
         }
-        val name = userNameTextView!!.text.toString()
+        val name = userNameTextView.text.toString()
         // Name is required
         if (TextUtils.isEmpty(name)) {
             return
         }
-        val yearbirth = userYearOfBirthSpinner!!.selectedItem.toString()
-        val gender = userGenderSpinner!!.selectedItemPosition
+        val yearbirth = userYearOfBirthSpinner.selectedItem.toString()
+        val gender = userGenderSpinner.selectedItemPosition
         mUser!!.username = name
         mUser!!.yearbirth = Integer.parseInt(yearbirth)
         mUser!!.gender = gender
@@ -223,7 +225,7 @@ class MyProfileActivity : BaseActivity(), View.OnClickListener, PhotosManagerDel
         val dataAdapter = ArrayAdapter(this,
                 android.R.layout.simple_spinner_item, list)
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        userYearOfBirthSpinner!!.adapter = dataAdapter
+        userYearOfBirthSpinner.adapter = dataAdapter
     }
 
     private fun addItemsOnSpinnerMunicipality() {
@@ -242,14 +244,14 @@ class MyProfileActivity : BaseActivity(), View.OnClickListener, PhotosManagerDel
         val dataAdapter = ArrayAdapter(this,
                 android.R.layout.simple_spinner_item, list)
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        userMunicipalitySpinner!!.adapter = dataAdapter
+        userMunicipalitySpinner.adapter = dataAdapter
     }
 
     private fun getMunicipalityIndexWith(municipalityId: String?): Int? {
         val municips = Arrays.asList(*resources.getStringArray(R.array.municipalities_arrays))
         var index: Int? = -1
         for (i in 1 until municips.size) {
-            val item = municips[i!!]
+            val item = municips[i]
             val tokens = StringTokenizer(item, "|")
             val id = tokens.nextToken()
             if (id == municipalityId) {

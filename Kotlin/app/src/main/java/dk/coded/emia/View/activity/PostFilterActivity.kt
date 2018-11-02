@@ -24,7 +24,9 @@ import java.util.ArrayList
 import java.util.Arrays
 import java.util.StringTokenizer
 
-import butterknife.BindView
+import kotlinx.android.synthetic.main.activity_filter.*
+import kotlinx.android.synthetic.main.notification.*
+import kotlinx.android.synthetic.main.post_detail_nav_header.*
 
 class PostFilterActivity : BaseActivity() {
 
@@ -38,67 +40,65 @@ class PostFilterActivity : BaseActivity() {
 
     private val adapter: PostsListAdapter? = null
 
-    @BindView(R.id.rlFilterWrapper)
-    internal var rlFilterWrapper: RelativeLayout? = null
-    @BindView(R.id.tvAge)
-    internal var tvAge: TextView? = null
-    @BindView(R.id.mlAge)
-    internal var mlAge: RangeSeekBar<Int>? = null
-    @BindView(R.id.rbFilterSex)
-    internal var rbFilterSex: RadioGroup? = null
-    @BindView(R.id.rbFilterStatus)
-    internal var rbFilterStatus: RadioGroup? = null
-    @BindView(R.id.rbGuys)
-    internal var rbGuys: RadioButton? = null
-    @BindView(R.id.rbGirls)
-    internal var rbGirls: RadioButton? = null
-    @BindView(R.id.rbBoth)
-    internal var rbBoth: RadioButton? = null
-    @BindView(R.id.rbAll)
-    internal var rbAll: RadioButton? = null
-    @BindView(R.id.rbMyFavorite)
-    internal var rbMyFavorite: RadioButton? = null
-    @BindView(R.id.llFilterWrapper)
-    internal var llFilterWrapper: LinearLayout? = null
-    @BindView(R.id.municipalities_spinner)
-    internal var municipalitySpinner: Spinner? = null
-
-    @BindView(R.id.nav_bar_title_tv)
-    internal var titleEditText: TextView? = null
-    @BindView(R.id.back_button)
-    internal var mBackButton: ImageButton? = null
-    @BindView(R.id.star_button)
-    internal var mStarButton: ImageButton? = null
-    @BindView(R.id.run_filter_button)
-    internal var mDoneButton: ImageButton? = null
-    @BindView(R.id.rlNotification)
-    internal var rlNotification: RelativeLayout? = null
+    private val filterWrapperRelativeLayout: RelativeLayout
+        get() = rlFilterWrapper
+    private val ageTextView: TextView
+        get() = tvAge
+    private val ageSeekBar: RangeSeekBar<Int>
+        get() = mlAge as RangeSeekBar<Int>
+    private val filterSexRadioGroup: RadioGroup
+        get() = rbFilterSex
+    private val filterStatusRadioGroup: RadioGroup
+        get() = rbFilterStatus
+    private val guysRadioButton: RadioButton
+        get() = rbGuys
+    private val girlsRadioButton: RadioButton
+        get() = rbGirls
+    private val bothRadioButton: RadioButton
+        get() = rbBoth
+    private val allRadioButton: RadioButton
+        get() = rbAll
+    private val myFavoriteRadioButton: RadioButton
+        get() = rbMyFavorite
+    private val filterWrapperLinearLayout: LinearLayout
+        get() = llFilterWrapper
+    private val municipalitySpinner: Spinner
+        get() = municipalities_spinner
+    private val titleEditText: TextView
+        get() = nav_bar_title_tv
+    private val mBackButton: ImageButton
+        get() = back_button
+    private val mStarButton: ImageButton
+        get() = star_button
+    private val mDoneButton: ImageButton
+        get() = run_filter_button
+    private val rlNotification: RelativeLayout
+        get() = layout_Notification
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_filter)
-        ButterKnife.bind(this)
 
-        titleEditText!!.text = resources.getString(R.string.filter_title)
+        titleEditText.text = resources.getString(R.string.filter_title)
 
         setUpButtonListeners()
         setUpSpinnerMunicipality()
         setUpDoneButton()
 
         //prepareNotificationsListener(this);
-        rlNotification!!.visibility = View.GONE
-        mStarButton!!.visibility = View.GONE
+        rlNotification.visibility = View.GONE
+        mStarButton.visibility = View.GONE
     }
 
     private fun setUpDoneButton() {
-        mDoneButton!!.setOnClickListener {
+        mDoneButton.setOnClickListener {
             FilterStorage.instance!!.setFilter(filter!!, this@PostFilterActivity)
             finish()
         }
     }
 
     private fun setUpButtonListeners() {
-        mBackButton!!.setOnClickListener { view -> finish() }
+        mBackButton.setOnClickListener { view -> finish() }
     }
 
     private fun setUpSpinnerMunicipality() {
@@ -117,7 +117,7 @@ class PostFilterActivity : BaseActivity() {
         val dataAdapter = ArrayAdapter(this,
                 android.R.layout.simple_spinner_item, list)
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        municipalitySpinner!!.adapter = dataAdapter
+        municipalitySpinner.adapter = dataAdapter
     }
 
     public override fun onStart() {
@@ -140,9 +140,9 @@ class PostFilterActivity : BaseActivity() {
         lookingFor = filter!!.gender!!
         favoriteStatus = filter!!.status!!
 
-        tvAge!!.text = ageMin.toString() + " - " + ageMax
+        ageTextView.text = ageMin.toString() + " - " + ageMax
 
-        rbFilterSex!!.setOnCheckedChangeListener { group, checkedId ->
+        filterSexRadioGroup.setOnCheckedChangeListener { group, checkedId ->
             when (checkedId) {
                 R.id.rbGuys -> {
                     filter!!.gender = Constants.GENDER_GUY
@@ -160,12 +160,12 @@ class PostFilterActivity : BaseActivity() {
         }
 
         when (lookingFor) {
-            Constants.GENDER_GUY -> rbFilterSex!!.check(R.id.rbGuys)
-            Constants.GENDER_GIRL -> rbFilterSex!!.check(R.id.rbGirls)
-            Constants.GENDER_BOTH -> rbFilterSex!!.check(R.id.rbBoth)
+            Constants.GENDER_GUY -> filterSexRadioGroup.check(R.id.rbGuys)
+            Constants.GENDER_GIRL -> filterSexRadioGroup.check(R.id.rbGirls)
+            Constants.GENDER_BOTH -> filterSexRadioGroup.check(R.id.rbBoth)
         }
 
-        rbFilterStatus!!.setOnCheckedChangeListener { group, checkedId ->
+        filterStatusRadioGroup.setOnCheckedChangeListener { group, checkedId ->
             when (checkedId) {
                 R.id.rbAll -> {
                     filter!!.status = Constants.STATUS_ALL
@@ -179,15 +179,15 @@ class PostFilterActivity : BaseActivity() {
         }
 
         when (favoriteStatus) {
-            Constants.STATUS_ALL -> rbFilterStatus!!.check(R.id.rbAll)
-            Constants.STATUS_MY_FAVORITE -> rbFilterStatus!!.check(R.id.rbMyFavorite)
+            Constants.STATUS_ALL -> filterStatusRadioGroup.check(R.id.rbAll)
+            Constants.STATUS_MY_FAVORITE -> filterStatusRadioGroup.check(R.id.rbMyFavorite)
         }
 
-        mlAge!!.setRangeValues(Constants.FILTER_MIN_AGE_LIMIT, Constants.FILTER_MAX_AGE_LIMIT)
-        mlAge!!.setSelectedMinValue(ageMin)
-        mlAge!!.setSelectedMaxValue(ageMax)
-        mlAge!!.setOnRangeSeekBarChangeListener({ bar, minValue, maxValue ->
-            tvAge!!.text = minValue.toString() + " - " + maxValue
+        ageSeekBar.setRangeValues(Constants.FILTER_MIN_AGE_LIMIT, Constants.FILTER_MAX_AGE_LIMIT)
+        ageSeekBar.setSelectedMinValue(ageMin)
+        ageSeekBar.setSelectedMaxValue(ageMax)
+        ageSeekBar.setOnRangeSeekBarChangeListener({ bar, minValue, maxValue ->
+            ageTextView.text = minValue.toString() + " - " + maxValue
             filter!!.ageMin = minValue as? Int
             filter!!.ageMax = maxValue as? Int
             ageMin = minValue as Int

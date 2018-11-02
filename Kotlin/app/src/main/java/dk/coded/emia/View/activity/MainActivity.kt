@@ -1,19 +1,3 @@
-/*
- * Copyright 2018 Google Inc. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package dk.coded.emia.View.activity
 
 import android.app.Activity
@@ -21,6 +5,7 @@ import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.ViewPager
@@ -46,8 +31,10 @@ import kotlinx.android.synthetic.main.tool_bar.*
 class MainActivity : BaseActivity(), LocalNotificationListener {
 
     internal var activity: Activity = this@MainActivity
-    private var mPagerAdapter: FragmentPagerAdapter? = null
-    private var mViewPager: ViewPager? = null
+
+//    private val mPagerAdapter: FragmentPagerAdapter by lazy {
+//        setrUpPageAdapter()
+//    }
 
     private val mNewPostButton: ImageButton
         get() = fab_new_post
@@ -55,19 +42,21 @@ class MainActivity : BaseActivity(), LocalNotificationListener {
         get() = filter_button
     private val mToolbar: Toolbar
         get() = toolbar as Toolbar
-    private val rlNotification: RelativeLayout
+    private val notificationsLayout: RelativeLayout
         get() = layout_Notification
+    private val tabLayout: TabLayout
+        get() = tabs
+    private val viewPager: ViewPager
+        get() = container
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        initToolBar()
-        initPageAdapter()
-        initFilterButton()
-        initNewPostButton()
+        configureView()
+
         prepareNotificationsListener(activity)
-        rlNotification.visibility = View.GONE
+        notificationsLayout.visibility = View.GONE
     }
 
     override fun onResume() {
@@ -78,20 +67,42 @@ class MainActivity : BaseActivity(), LocalNotificationListener {
         super.onPause()
     }
 
-    private fun initFilterButton() {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        setUpSearchMenu(menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return if (didSelectMenu(item.itemId)) true else super.onOptionsItemSelected(item)
+    }
+
+    private fun configureView() {
+        setUpPagerView()
+        setUpToolBar()
+        setUpFilterButton()
+        setUpNewPostButton()
+    }
+
+    private fun setUpFilterButton() {
+        // Button launches FilterActivity
         mFilterButton.setOnClickListener { startActivity(Intent(this@MainActivity, PostFilterActivity::class.java)) }
     }
 
-    private fun initNewPostButton() {
+    private fun setUpNewPostButton() {
         // Button launches NewPostActivity
         mNewPostButton.setOnClickListener { startActivity(Intent(this@MainActivity, NewPostActivity::class.java)) }
     }
 
-    private fun initPageAdapter() {
+    private fun setUpPagerView() {
         // Create the adapter that will return a fragment for each section
-        mPagerAdapter = object : FragmentPagerAdapter(supportFragmentManager) {
+        val pagerAdapter = object : FragmentPagerAdapter(supportFragmentManager) {
             private val mFragments = arrayOf<Fragment>(RecentPostsFragment(), MyPostsFragment(), MyFavoritePostsFragment())
-            private val mFragmentNames = arrayOf(getString(R.string.heading_recent), getString(R.string.heading_my_posts), getString(R.string.heading_my_top_posts))
+
+            private val mFragmentNames = arrayOf(getString(R.string.heading_recent),
+                    getString(R.string.heading_my_posts),
+                    getString(R.string.heading_my_top_posts))
+
             override fun getItem(position: Int): Fragment {
                 return mFragments[position]
             }
@@ -104,14 +115,11 @@ class MainActivity : BaseActivity(), LocalNotificationListener {
                 return mFragmentNames[position]
             }
         }
-        // Set up the ViewPager with the sections adapter.
-        mViewPager = findViewById(R.id.container)
-        mViewPager!!.adapter = mPagerAdapter
-        val tabLayout = tabs
-        tabLayout.setupWithViewPager(mViewPager)
+        viewPager.adapter = pagerAdapter
+        tabLayout.setupWithViewPager(viewPager)
     }
 
-    private fun initToolBar() {
+    private fun setUpToolBar() {
         mToolbar.setTitle(R.string.app_name)
         mToolbar.setTitleTextColor(Utils.getColor(this, android.R.color.white))
 
@@ -129,28 +137,7 @@ class MainActivity : BaseActivity(), LocalNotificationListener {
         //        );
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-        createSearchMenu(menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val i = item.itemId
-        if (i == R.id.action_my_profile) {
-            startActivity(Intent(this, MyProfileActivity::class.java))
-            return true
-        } else if (i == R.id.action_logout) {
-            val interactor = DatabaseFactory.databaseInteractor
-            interactor.logOut()
-            startActivity(Intent(this, SignInActivity::class.java))
-            return true
-        } else {
-            return super.onOptionsItemSelected(item)
-        }
-    }
-
-    private fun createSearchMenu(menu: Menu) {
+    private fun setUpSearchMenu(menu: Menu) {
 
         //getting the search view from the menu
         val searchViewItem = menu.findItem(R.id.menuSearch)
@@ -190,6 +177,22 @@ class MainActivity : BaseActivity(), LocalNotificationListener {
                 return false
             }
         })
+    }
+
+    private fun didSelectMenu(index: Int) : Boolean {
+        when (index) {
+            R.id.action_my_profile -> {
+                startActivity(Intent(this, MyProfileActivity::class.java))
+                return true
+            }
+            R.id.action_logout -> {
+                val interactor = DatabaseFactory.databaseInteractor
+                interactor.logOut()
+                startActivity(Intent(this, SignInActivity::class.java))
+                return true
+            }
+        }
+        return false
     }
 
     companion object {

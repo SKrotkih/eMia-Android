@@ -22,8 +22,6 @@ import android.widget.TextView
 import android.widget.Toast
 import com.github.chrisbanes.photoview.PhotoView
 
-import butterknife.BindView
-import butterknife.ButterKnife
 import dk.coded.emia.model.Data.Post
 import dk.coded.emia.model.interactor.DatabaseFactory
 import dk.coded.emia.model.interactor.DatabaseInteractor
@@ -32,31 +30,32 @@ import dk.coded.emia.utils.Alerts
 import dk.coded.emia.utils.Constants
 import dk.coded.emia.utils.PhotosManager
 import dk.coded.emia.utils.PhotosManagerDelegate
-import dk.coded.emia.utils.Constants.Companion.CANCEL
-import dk.coded.emia.utils.Constants.Companion.FAIL
-import dk.coded.emia.utils.Constants.Companion.SUCCESS
+
+import kotlinx.android.synthetic.main.activity_new_post.*
+import kotlinx.android.synthetic.main.notification.*
+import kotlinx.android.synthetic.main.post_detail_nav_header.*
 
 class NewPostActivity : BaseActivity(), View.OnClickListener, PhotosManagerDelegate {
     internal var activity: Activity = this@NewPostActivity
 
-    @BindView(R.id.field_title)
-    internal var mTitleField: EditText? = null
-    @BindView(R.id.field_body)
-    internal var mBodyField: EditText? = null
-    @BindView(R.id.fab_submit_post)
-    internal var mSubmitButton: FloatingActionButton? = null
-    @BindView(R.id.photo_post)
-    internal var ivPhoto: PhotoView? = null
-    @BindView(R.id.add_to_post_photo_button)
-    internal var addPhotoButton: Button? = null
-    @BindView(R.id.back_button)
-    internal var mBackButton: ImageButton? = null
-    @BindView(R.id.star_button)
-    internal var mStarButton: ImageButton? = null
-    @BindView(R.id.nav_bar_title_tv)
-    internal var mTitleTextView: TextView? = null
-    @BindView(R.id.rlNotification)
-    internal var rlNotification: RelativeLayout? = null
+    private val mTitleField: EditText
+        get() = field_title
+    private val mBodyField: EditText
+        get() = field_body
+    private val mSubmitButton: FloatingActionButton
+        get() = fab_submit_post
+    private val ivPhoto: PhotoView
+        get() = photo_post
+    private val addPhotoButton: Button
+        get() = add_to_post_photo_button
+    private val mBackButton: ImageButton
+        get() = back_button
+    private val mStarButton: ImageButton
+        get() = star_button
+    private val mTitleTextView: TextView
+        get() = nav_bar_title_tv
+    private val rlNotification: RelativeLayout
+        get() = layout_Notification
 
     private var photoBitmap: Bitmap? = null
     private var databaseInteractor: DatabaseInteractor? = null
@@ -66,23 +65,21 @@ class NewPostActivity : BaseActivity(), View.OnClickListener, PhotosManagerDeleg
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_post)
 
-        ButterKnife.bind(this)
-
         databaseInteractor = DatabaseFactory.databaseInteractor
         photosManager = PhotosManager()
 
-        addPhotoButton!!.setOnClickListener(this)
-        mBackButton!!.setOnClickListener(this)
-        mSubmitButton!!.setOnClickListener(this)
+        addPhotoButton.setOnClickListener(this)
+        mBackButton.setOnClickListener(this)
+        mSubmitButton.setOnClickListener(this)
 
-        mStarButton!!.visibility = View.GONE
+        mStarButton.visibility = View.GONE
 
-        showKeyboard(mTitleField!!)
+        showKeyboard(mTitleField)
 
-        mTitleTextView!!.text = resources.getString(R.string.new_post_title)
+        mTitleTextView.text = resources.getString(R.string.new_post_title)
 
         //prepareNotificationsListener(activity);
-        rlNotification!!.visibility = View.GONE
+        rlNotification.visibility = View.GONE
     }
 
     override fun onClick(button: View) {
@@ -98,18 +95,18 @@ class NewPostActivity : BaseActivity(), View.OnClickListener, PhotosManagerDeleg
     }
 
     private fun submitPost() {
-        val title = mTitleField!!.text.toString()
-        val body = mBodyField!!.text.toString()
+        val title = mTitleField.text.toString()
+        val body = mBodyField.text.toString()
 
         // Title is required
         if (TextUtils.isEmpty(title)) {
-            mTitleField!!.error = resources.getString(R.string.field_required)
+            mTitleField.error = resources.getString(R.string.field_required)
             return
         }
 
         // Body is required
         if (TextUtils.isEmpty(body)) {
-            mBodyField!!.error = resources.getString(R.string.field_required)
+            mBodyField.error = resources.getString(R.string.field_required)
             return
         }
 
@@ -152,12 +149,12 @@ class NewPostActivity : BaseActivity(), View.OnClickListener, PhotosManagerDeleg
     }
 
     private fun setEditingEnabled(enabled: Boolean) {
-        mTitleField!!.isEnabled = enabled
-        mBodyField!!.isEnabled = enabled
+        mTitleField.isEnabled = enabled
+        mBodyField.isEnabled = enabled
         if (enabled) {
-            mSubmitButton!!.visibility = View.VISIBLE
+            mSubmitButton.visibility = View.VISIBLE
         } else {
-            mSubmitButton!!.visibility = View.GONE
+            mSubmitButton.visibility = View.GONE
         }
     }
 
@@ -168,7 +165,7 @@ class NewPostActivity : BaseActivity(), View.OnClickListener, PhotosManagerDeleg
     }
 
     override fun setPhoto(bitmap: Bitmap) {
-        ivPhoto!!.setImageBitmap(bitmap)
+        ivPhoto.setImageBitmap(bitmap)
         photoBitmap = bitmap
     }
 
@@ -185,5 +182,4 @@ class NewPostActivity : BaseActivity(), View.OnClickListener, PhotosManagerDeleg
 
         private val TAG = "NewPostActivity"
     }
-
 }

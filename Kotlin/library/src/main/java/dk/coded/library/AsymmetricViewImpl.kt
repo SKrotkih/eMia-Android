@@ -12,20 +12,23 @@ internal class AsymmetricViewImpl(context: Context) {
     var isAllowReordering: Boolean = false
     var isDebugging: Boolean = false
 
+    private var _requestedColumnWidth: Int = 0
+    private var _requestedColumnCount: Int = 0
+
     init {
         requestedHorizontalSpacing = Utils.dpToPx(context, 5f)
     }
 
     var requestedColumnWidth: Int
-        get() = 0
+        get() = _requestedColumnWidth
         set(width) {
-            requestedColumnWidth = width
+            _requestedColumnWidth = width
         }
 
     var requestedColumnCount: Int
-        get() = 0
+        get() = _requestedColumnCount
         set(void) {
-            requestedColumnCount = void
+            _requestedColumnCount = void
         }
 
     fun determineColumns(availableSpace: Int): Int {
