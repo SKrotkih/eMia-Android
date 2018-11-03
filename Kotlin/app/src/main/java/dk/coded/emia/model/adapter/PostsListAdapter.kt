@@ -31,7 +31,11 @@ import java.util.stream.Collectors
 import com.bumptech.glide.request.RequestOptions.bitmapTransform
 import dk.coded.emia.utils.Constants
 
-class PostsListAdapter(private val mContext: Context) : ArrayAdapter<PostsCollectionViewItem>(mContext, 0), PostsListAdapterProtocol, PostObserverProtocol, UserObserverProtocol {
+class PostsListAdapter(private val mContext: Context) : ArrayAdapter<PostsCollectionViewItem>(mContext, 0),
+        PostsListAdapterProtocol,
+        PostObserverProtocol,
+        UserObserverProtocol {
+
     private val mInteractor: DatabaseInteractor
     private var mDecCounter: Int = 0
     var showPostsStrategy: PostListFragment? = null
@@ -43,8 +47,23 @@ class PostsListAdapter(private val mContext: Context) : ArrayAdapter<PostsCollec
         mInteractor = DatabaseFactory.databaseInteractor
     }
 
+    // PostsListAdapterProtocol
     override fun startListening() {
         UserObserver.instance!!.register(this, mContext)
+    }
+
+    override fun stopListening() {
+        PostObserver.instance!!.unregister(this)
+    }
+
+    override fun appendItems(newItems: List<PostsCollectionViewItem>) {
+        addAll(newItems)
+        notifyDataSetChanged()
+    }
+
+    override fun setItems(moreItems: List<PostsCollectionViewItem>) {
+        clear()
+        appendItems(moreItems)
     }
 
     // UserObserverProtocol
@@ -83,6 +102,17 @@ class PostsListAdapter(private val mContext: Context) : ArrayAdapter<PostsCollec
         }
     }
 
+    // ListAdapter
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+        val item = getItem(position)
+        return bindData(item!!.post, convertView, parent, item.rowSpan)
+    }
+
+    override fun getViewTypeCount(): Int {
+        return 2
+    }
+
+    // Private methods
     private fun presentFilteredData(posts: List<Post>) {
         if (posts.size == 0) {
             return
@@ -125,6 +155,7 @@ class PostsListAdapter(private val mContext: Context) : ArrayAdapter<PostsCollec
         return author
     }
 
+    // Present post on the grid cell
     private fun showData(view: View, post: Post) {
         val titleTextView = view.findViewById<View>(R.id.titleTextView) as TextView
         val descriptionTextView = view.findViewById<View>(R.id.descriptionTextView) as TextView
@@ -157,15 +188,6 @@ class PostsListAdapter(private val mContext: Context) : ArrayAdapter<PostsCollec
         }
     }
 
-    override fun stopListening() {
-        PostObserver.instance!!.unregister(this)
-    }
-
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val item = getItem(position)
-        return bindData(item!!.post, convertView, parent, item.rowSpan)
-    }
-
     private fun bindData(post: Post?, convertView: View?, parent: ViewGroup, rowSpan: Int): View {
         val view: View
         val layoutInflater = LayoutInflater.from(mContext)
@@ -178,17 +200,4 @@ class PostsListAdapter(private val mContext: Context) : ArrayAdapter<PostsCollec
         return view
     }
 
-    override fun getViewTypeCount(): Int {
-        return 2
-    }
-
-    override fun appendItems(newItems: List<PostsCollectionViewItem>) {
-        addAll(newItems)
-        notifyDataSetChanged()
-    }
-
-    override fun setItems(moreItems: List<PostsCollectionViewItem>) {
-        clear()
-        appendItems(moreItems)
-    }
 }

@@ -16,13 +16,15 @@ import dk.coded.emia.notifications.LocalNotificationReceiver
 import dk.coded.emia.notifications.RemoteNotifications
 import dk.coded.emia.utils.Constants
 
-open class BaseActivity : AppCompatActivity() {
+abstract class BaseActivity : AppCompatActivity() {
 
     private var mActivity: Activity? = null
     private var mNotificationListening: Boolean? = false
     private var mProgressDialog: ProgressDialog? = null
     private var mFocusView: View? = null
     private var notificationReceiver: LocalNotificationReceiver? = null
+
+    abstract fun configureView()
 
     fun showProgressDialog() {
         if (mProgressDialog == null) {
@@ -83,12 +85,10 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     fun hideKeyboard() {
-        if (mFocusView == null) {
-            return
+        if (mFocusView != null) {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(mFocusView!!.windowToken, 0)
+            mFocusView = null
         }
-        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(mFocusView!!.windowToken, 0)
-        mFocusView = null
     }
-
 }

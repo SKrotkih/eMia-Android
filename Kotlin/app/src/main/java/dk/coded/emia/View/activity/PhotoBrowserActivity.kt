@@ -64,6 +64,10 @@ class PhotoBrowserActivity : BaseActivity() {
         starButton.visibility = View.GONE
     }
 
+    override fun configureView() {
+
+    }
+
     public override fun onStart() {
         super.onStart()
 

@@ -77,7 +77,7 @@ class MainActivity : BaseActivity(), LocalNotificationListener {
         return if (didSelectMenu(item.itemId)) true else super.onOptionsItemSelected(item)
     }
 
-    private fun configureView() {
+    override fun configureView() {
         setUpPagerView()
         setUpToolBar()
         setUpFilterButton()
@@ -97,22 +97,22 @@ class MainActivity : BaseActivity(), LocalNotificationListener {
     private fun setUpPagerView() {
         // Create the adapter that will return a fragment for each section
         val pagerAdapter = object : FragmentPagerAdapter(supportFragmentManager) {
-            private val mFragments = arrayOf<Fragment>(RecentPostsFragment(), MyPostsFragment(), MyFavoritePostsFragment())
+            val fragments = arrayOf<Fragment>(RecentPostsFragment(), MyPostsFragment(), MyFavoritePostsFragment())
 
-            private val mFragmentNames = arrayOf(getString(R.string.heading_recent),
+            val fragmentNames = arrayOf(getString(R.string.heading_recent),
                     getString(R.string.heading_my_posts),
                     getString(R.string.heading_my_top_posts))
 
             override fun getItem(position: Int): Fragment {
-                return mFragments[position]
+                return fragments[position]
             }
 
             override fun getCount(): Int {
-                return mFragments.size
+                return fragments.size
             }
 
             override fun getPageTitle(position: Int): CharSequence {
-                return mFragmentNames[position]
+                return fragmentNames[position]
             }
         }
         viewPager.adapter = pagerAdapter

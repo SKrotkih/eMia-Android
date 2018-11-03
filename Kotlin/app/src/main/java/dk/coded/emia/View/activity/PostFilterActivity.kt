@@ -90,6 +90,10 @@ class PostFilterActivity : BaseActivity() {
         mStarButton.visibility = View.GONE
     }
 
+    override fun configureView() {
+
+    }
+
     private fun setUpDoneButton() {
         mDoneButton.setOnClickListener {
             FilterStorage.instance!!.setFilter(filter!!, this@PostFilterActivity)

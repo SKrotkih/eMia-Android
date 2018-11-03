@@ -58,6 +58,10 @@ class SignInActivity : BaseActivity(), View.OnClickListener {
         showKeyboard(mEmailField)
     }
 
+    override fun configureView() {
+
+    }
+
     override fun onClick(v: View) {}
 
     public override fun onStart() {

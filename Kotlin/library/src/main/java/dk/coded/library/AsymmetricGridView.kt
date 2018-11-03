@@ -59,7 +59,7 @@ class AsymmetricGridView(context: Context, attrs: AttributeSet) : ListView(conte
         _onItemClickListener = listener
     }
 
-    override val dividerHeight2: Int
+    override val separatorHeight: Int
         get() = 1
 
     override var requestedHorizontalSpacing: Int

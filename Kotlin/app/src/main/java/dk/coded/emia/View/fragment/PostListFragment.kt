@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.ListAdapter
 import android.widget.ListView
 
 import java.util.ArrayList
@@ -35,8 +36,7 @@ import dk.coded.emia.utils.BasicCallBack
 abstract class PostListFragment : Fragment(), AdapterView.OnItemClickListener {
 
     private var mLayoutManager: LinearLayoutManager? = null
-    private var mListView: ListView? = null
-    private var mAdapter: PostsListAdapter? = null
+    private var mPostListsAdapter: PostsListAdapter? = null
     private var mRouter: MainScreenRouter? = null
 
     private var mActivity: Activity? = null
@@ -46,49 +46,44 @@ abstract class PostListFragment : Fragment(), AdapterView.OnItemClickListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                           savedInstanceState: Bundle?): View? {
-        super.onCreateView(inflater!!, container, savedInstanceState)
+        super.onCreateView(inflater, container, savedInstanceState)
+        val rootView = inflater.inflate(R.layout.fragment_all_posts, container, false)
 
         mActivity = activity
-
-        mValidator = PostListValidator(mActivity!!)
-
-        val rootView = inflater!!.inflate(R.layout.fragment_all_posts, container, false)
-
-        mLayoutManager = LinearLayoutManager(mActivity)
-
-        mRouter = MainScreenRouter(mActivity!!, mActivity!!, mActivity!!)
-
-        mListView = createListView(rootView)
-
-        mAdapter = configureListViewAdapter(mListView!!)
+        configure(activity = mActivity!!, view = rootView)
 
         return rootView
     }
 
-    // https://github.com/felipecsl/AsymmetricGridView
-    private fun createListView(rootView: View): ListView {
-        val gridView = rootView.findViewById<View>(R.id.messages_list) as AsymmetricGridView
-        gridView.setRequestedColumnCount(2)
-        gridView.setBackgroundColor(Color.parseColor("#FFFFFF"))
-        gridView.requestedHorizontalSpacing = Utils.dpToPx(mActivity!!, 3f)
-        gridView.isDebugging = true
-        gridView.onItemClickListener = this
-        return gridView
+    private fun configure(activity: Activity, view: View) {
+        mValidator = PostListValidator(activity)
+        mLayoutManager = LinearLayoutManager(activity)
+        mRouter = MainScreenRouter(activity, activity, activity)
+        mPostListsAdapter = configureGridView(view, activity)
     }
 
-    private fun configureListViewAdapter(listView: ListView): PostsListAdapter {
-        val asymmetricGridView = listView as AsymmetricGridView
-        val adapter = PostsListAdapter(mActivity!!)
-        // We use just needShow method. TODO: make interface with needShow method
-        adapter.showPostsStrategy = this
-        val listViewAdapter = AsymmetricGridViewAdapter(mActivity!!, asymmetricGridView, adapter)
-        listView.setAdapter(listViewAdapter)
-        return adapter
+    // https://github.com/felipecsl/AsymmetricGridView
+    private fun configureGridView(rootView: View, context: Context): PostsListAdapter {
+        val postsListAdapter = PostsListAdapter(context)
+        postsListAdapter.showPostsStrategy = this
+
+        val gridView = rootView.findViewById<View>(R.id.messages_list) as AsymmetricGridView
+        // Wrapper for the postsListAdapter
+        val gridAdapter = AsymmetricGridViewAdapter(context, gridView, postsListAdapter)
+        gridView.setAdapter(gridAdapter)
+
+        gridView.setRequestedColumnCount(2)
+        gridView.setBackgroundColor(Color.parseColor("#FFFFFF"))
+        gridView.requestedHorizontalSpacing = Utils.dpToPx(context, 3f)
+        gridView.isDebugging = true
+        gridView.onItemClickListener = this
+
+        return postsListAdapter
     }
 
     override fun onItemClick(parent: AdapterView<*>, view: View,
                              position: Int, id: Long) {
-        val post = mAdapter!!.getItem(position)!!.post
+        val post = mPostListsAdapter!!.getItem(position)!!.post
         mRouter!!.browsePost(post)
     }
 
@@ -115,9 +110,9 @@ abstract class PostListFragment : Fragment(), AdapterView.OnItemClickListener {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putInt("itemCount", mAdapter!!.count)
-        for (i in 0 until mAdapter!!.count) {
-            outState.putParcelable("item_$i", mAdapter!!.getItem(i) as Parcelable)
+        outState.putInt("itemCount", mPostListsAdapter!!.count)
+        for (i in 0 until mPostListsAdapter!!.count) {
+            outState.putParcelable("item_$i", mPostListsAdapter!!.getItem(i) as Parcelable)
         }
     }
 
@@ -127,7 +122,7 @@ abstract class PostListFragment : Fragment(), AdapterView.OnItemClickListener {
         for (i in 0 until count) {
             items.add(savedInstanceState.getParcelable<Parcelable>("item_$i") as PostsCollectionViewItem)
         }
-        mAdapter!!.setItems(items)
+        mPostListsAdapter!!.setItems(items)
     }
 
     private fun startSearchListening() {
@@ -144,14 +139,14 @@ abstract class PostListFragment : Fragment(), AdapterView.OnItemClickListener {
     }
 
     private fun startDataListening() {
-        if (mAdapter != null) {
-            mAdapter!!.startListening()
+        if (mPostListsAdapter != null) {
+            mPostListsAdapter!!.startListening()
         }
     }
 
     private fun stopDataListening() {
-        if (mAdapter != null) {
-            mAdapter!!.stopListening()
+        if (mPostListsAdapter != null) {
+            mPostListsAdapter!!.stopListening()
         }
     }
 

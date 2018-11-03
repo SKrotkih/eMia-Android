@@ -35,7 +35,7 @@ class AsymmetricRecyclerView(context: Context, attrs: AttributeSet) : RecyclerVi
         get() = viewImpl.getColumnWidth(availableSpace)
 
 
-    override val dividerHeight2: Int
+    override val separatorHeight: Int
         get() = 0
 
 

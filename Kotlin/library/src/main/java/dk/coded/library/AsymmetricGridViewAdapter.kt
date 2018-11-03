@@ -31,13 +31,18 @@ class AsymmetricGridViewAdapter(context: Context, listView: AsymmetricGridView, 
         wrappedAdapter.registerDataSetObserver(GridDataSetObserver())
     }
 
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+        val viewHolder = adapterImpl.onCreateViewHolder()
+        adapterImpl.onBindViewHolder(viewHolder, position, parent)
+        return viewHolder.itemView
+    }
+
     override fun getItem(position: Int): AsymmetricItem {
         return wrappedAdapter.getItem(position) as AsymmetricItem
     }
 
     override fun onBindAsymmetricViewHolder(holder: AsymmetricViewHolder<RecyclerView.ViewHolder>, parent: ViewGroup, position: Int) {
         wrappedAdapter.getView(position, holder.itemView, parent)
-
     }
 
     override fun onCreateAsymmetricViewHolder(
@@ -47,12 +52,6 @@ class AsymmetricGridViewAdapter(context: Context, listView: AsymmetricGridView, 
 
     override fun getItemId(position: Int): Long {
         return wrappedAdapter.getItemId(position)
-    }
-
-    override fun getView(position: Int, convertView: View, parent: ViewGroup): View {
-        val viewHolder = adapterImpl.onCreateViewHolder()
-        adapterImpl.onBindViewHolder(viewHolder, position, parent)
-        return viewHolder.itemView
     }
 
     override fun getCount(): Int {

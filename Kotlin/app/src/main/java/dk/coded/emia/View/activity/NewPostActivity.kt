@@ -82,6 +82,10 @@ class NewPostActivity : BaseActivity(), View.OnClickListener, PhotosManagerDeleg
         rlNotification.visibility = View.GONE
     }
 
+    override fun configureView() {
+
+    }
+
     override fun onClick(button: View) {
         hideKeyboard()
         val buttonId = button.id

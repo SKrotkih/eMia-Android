@@ -185,7 +185,7 @@ class AdapterImpl(private val context: Context, val agvAdapter: AGVBaseAdapter<*
         val rowHeight = listView.columnWidth * rowSpan
         // when the item spans multiple rows, we need to account for the vertical padding
         // and add that to the total final height
-        return rowHeight + (rowSpan - 1) * listView.dividerHeight2
+        return rowHeight + (rowSpan - 1) * listView.separatorHeight
     }
 
     fun getRowWidth(item: AsymmetricItem): Int {

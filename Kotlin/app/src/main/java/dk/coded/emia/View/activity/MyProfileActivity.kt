@@ -115,6 +115,10 @@ class MyProfileActivity : BaseActivity(), View.OnClickListener, PhotosManagerDel
         starButton.visibility = View.GONE
     }
 
+    override fun configureView() {
+
+    }
+
     override fun onClick(v: View) {}
 
     public override fun onStart() {

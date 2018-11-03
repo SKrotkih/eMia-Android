@@ -103,6 +103,10 @@ class PostDetailActivity : BaseActivity() {
         rlNotification.visibility = View.GONE
     }
 
+    override fun configureView() {
+
+    }
+
     private fun setUpButtonListeners() {
         mCommentButton.setOnClickListener { view -> sendComment() }
         mBackButton.setOnClickListener { view -> finish() }
