@@ -221,7 +221,7 @@ class AdapterImpl(private val context: Context, val agvAdapter: AGVBaseAdapter<*
     }
 
     private fun findOrInitializeChildLayout(parentLayout: LinearLayout, childIndex: Int): LinearLayout {
-        var childLayout: LinearLayout? = parentLayout.getChildAt(childIndex) as LinearLayout
+        var childLayout = parentLayout.getChildAt(childIndex) as? LinearLayout
 
         if (childLayout == null) {
             childLayout = linearLayoutPool.get()
