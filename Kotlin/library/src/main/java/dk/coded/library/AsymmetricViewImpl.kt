@@ -16,7 +16,7 @@ internal class AsymmetricViewImpl(context: Context) {
     private var _requestedColumnCount: Int = 0
 
     init {
-        requestedHorizontalSpacing = Utils.dpToPx(context, 5f)
+        requestedHorizontalSpacing = BGVUtils.dpToPx(context, 5f)
     }
 
     var requestedColumnWidth: Int

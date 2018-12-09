@@ -1,3 +1,3 @@
 package dk.coded.library
 
-internal class RowItem(val index: Int, val item: AsymmetricItem)
+internal class RowItem(val index: Int, val item: BGVAsymmetricItem)

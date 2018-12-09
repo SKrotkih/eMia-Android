@@ -7,7 +7,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.ViewTreeObserver
 
-class AsymmetricRecyclerView(context: Context, attrs: AttributeSet) : RecyclerView(context, attrs), AsymmetricView {
+class AsymmetricRecyclerView(context: Context, attrs: AttributeSet) : RecyclerView(context, attrs), BVGAsymmetricView {
     private val viewImpl: AsymmetricViewImpl
     private var adapter: AsymmetricRecyclerViewAdapter<*>? = null
 

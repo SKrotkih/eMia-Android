@@ -22,10 +22,10 @@ internal class RowInfo : Parcelable {
         val totalItems = `in`.readInt()
 
         _items = ArrayList()
-        val classLoader = AsymmetricItem::class.java!!.getClassLoader()
+        val classLoader = BGVAsymmetricItem::class.java!!.getClassLoader()
 
         for (i in 0 until totalItems) {
-            _items.add(RowItem(`in`.readInt(), `in`.readParcelable<Parcelable>(classLoader) as AsymmetricItem))
+            _items.add(RowItem(`in`.readInt(), `in`.readParcelable<Parcelable>(classLoader) as BGVAsymmetricItem))
         }
     }
 

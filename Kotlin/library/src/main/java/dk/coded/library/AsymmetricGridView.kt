@@ -9,7 +9,7 @@ import android.widget.AdapterView
 import android.widget.ListAdapter
 import android.widget.ListView
 
-class AsymmetricGridView(context: Context, attrs: AttributeSet) : ListView(context, attrs), AsymmetricView {
+class AsymmetricGridView(context: Context, attrs: AttributeSet) : ListView(context, attrs), BVGAsymmetricView {
 
     protected var _onItemClickListener: AdapterView.OnItemClickListener? = null
     protected var _onItemLongClickListener: AdapterView.OnItemLongClickListener? = null

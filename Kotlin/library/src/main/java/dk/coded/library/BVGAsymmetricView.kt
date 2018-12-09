@@ -2,7 +2,7 @@ package dk.coded.library
 
 import android.view.View
 
-interface AsymmetricView {
+interface BVGAsymmetricView {
     val isDebugging: Boolean
     val numColumns: Int
     val isAllowReordering: Boolean

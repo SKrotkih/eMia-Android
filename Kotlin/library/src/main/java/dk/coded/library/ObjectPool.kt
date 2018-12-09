@@ -5,9 +5,9 @@ import android.os.Parcelable
 
 import java.util.Stack
 
-internal class ObjectPool<T> : Parcelable {
+internal class BGVObjectPool<T> : Parcelable {
     var stack = Stack<T>()
-    var factory: PoolObjectFactory<T>? = null
+    var factory: BGVPoolObjectFactory<T>? = null
     var stats = PoolStats()
 
     constructor(`in`: Parcel) {}
@@ -15,7 +15,7 @@ internal class ObjectPool<T> : Parcelable {
     constructor() {
     }
 
-    constructor(factory: PoolObjectFactory<T>) {
+    constructor(factory: BGVPoolObjectFactory<T>) {
         this.factory = factory
     }
 
@@ -72,13 +72,13 @@ internal class ObjectPool<T> : Parcelable {
     companion object {
 
         @JvmField
-        val CREATOR: Parcelable.Creator<ObjectPool<*>> = object : Parcelable.Creator<ObjectPool<*>> {
+        val CREATOR: Parcelable.Creator<BGVObjectPool<*>> = object : Parcelable.Creator<BGVObjectPool<*>> {
 
-            override fun createFromParcel(`in`: Parcel): ObjectPool<*> {
-                return ObjectPool<Parcel>(`in`)
+            override fun createFromParcel(`in`: Parcel): BGVObjectPool<*> {
+                return BGVObjectPool<Parcel>(`in`)
             }
 
-            override fun newArray(size: Int): Array<ObjectPool<*>?> {
+            override fun newArray(size: Int): Array<BGVObjectPool<*>?> {
                 return arrayOfNulls(size)
             }
         }
