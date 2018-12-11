@@ -16,10 +16,10 @@ import android.widget.LinearLayout
 import java.util.ArrayList
 import java.util.HashMap
 
-class AdapterImpl(private val context: Context, val agvAdapter: BGVBaseAdapter<*>, val listView: BVGAsymmetricView) : View.OnClickListener, View.OnLongClickListener {
+class AdapterImpl(private val context: Context, val agvAdapter: BaseAdapter<*>, val listView: BaseAsymmetricView) : View.OnClickListener, View.OnLongClickListener {
     private val itemsPerRow = HashMap<Int, RowInfo>()
     private val linearLayoutPool: BGVObjectPool<LinearLayout>
-    private val viewHoldersMap = ArrayMap<Int, BGVObjectPool<BGVAsymmetricViewHolder<*>>>()
+    private val viewHoldersMap = ArrayMap<Int, BGVObjectPool<AsymmetricGridViewHolder<*>>>()
     private val debugEnabled: Boolean
     private var asyncTask: ProcessRowsTask? = null
 
@@ -28,7 +28,7 @@ class AdapterImpl(private val context: Context, val agvAdapter: BGVBaseAdapter<*
 
     init {
         this.debugEnabled = listView.isDebugging
-        this.linearLayoutPool = BGVObjectPool(BGVLinearLayoutPoolObjectFactory(context))
+        this.linearLayoutPool = BGVObjectPool(LinearLayoutPoolObjectFactory(context))
     }
 
     private fun calculateItemsForRow(items: List<RowItem>, initialSpaceLeft: Float = listView.numColumns.toFloat()): RowInfo {
@@ -119,7 +119,7 @@ class AdapterImpl(private val context: Context, val agvAdapter: BGVBaseAdapter<*
 
                 val actualIndex = currentItem.index
                 val viewType = agvAdapter.getItemViewType(actualIndex)
-                var pool: BGVObjectPool<BGVAsymmetricViewHolder<*>>? = viewHoldersMap[viewType]
+                var pool: BGVObjectPool<AsymmetricGridViewHolder<*>>? = viewHoldersMap[viewType]
                 if (pool == null) {
                     pool = BGVObjectPool()
                     viewHoldersMap[viewType] = pool
@@ -177,7 +177,7 @@ class AdapterImpl(private val context: Context, val agvAdapter: BGVBaseAdapter<*
         return ViewHolder(layout)
     }
 
-    fun getRowHeight(item: BGVAsymmetricItem): Int {
+    fun getRowHeight(item: AsymmetricGridItem): Int {
         return getRowHeight(item.rowSpan)
     }
 
@@ -188,7 +188,7 @@ class AdapterImpl(private val context: Context, val agvAdapter: BGVBaseAdapter<*
         return rowHeight + (rowSpan - 1) * listView.separatorHeight
     }
 
-    fun getRowWidth(item: BGVAsymmetricItem): Int {
+    fun getRowWidth(item: AsymmetricGridItem): Int {
         return getRowWidth(item.columnSpan)
     }
 
@@ -197,7 +197,7 @@ class AdapterImpl(private val context: Context, val agvAdapter: BGVBaseAdapter<*
         // when the item spans multiple columns, we need to account for the horizontal padding
         // and add that to the total final width
         return Math.min(rowWidth + (columnSpan - 1) * listView.requestedHorizontalSpacing,
-                BGVUtils.getScreenWidth(context))
+                UtilsLibrary.getScreenWidth(context))
     }
 
     private fun initializeLayout(layout: LinearLayout): LinearLayout {
@@ -298,7 +298,7 @@ class AdapterImpl(private val context: Context, val agvAdapter: BGVBaseAdapter<*
         }
     }
 
-    private class ViewState constructor(val viewType: Int, val rowItem: RowItem, val viewHolder: BGVAsymmetricViewHolder<*>)
+    private class ViewState constructor(val viewType: Int, val rowItem: RowItem, val viewHolder: AsymmetricGridViewHolder<*>)
 
     class ViewHolder(itemView: LinearLayout) : RecyclerView.ViewHolder(itemView) {
 

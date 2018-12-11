@@ -9,19 +9,19 @@ import android.widget.AdapterView
 import android.widget.ListAdapter
 import android.widget.ListView
 
-class AsymmetricGridView(context: Context, attrs: AttributeSet) : ListView(context, attrs), BVGAsymmetricView {
+class AsymmetricGridView(context: Context, attrs: AttributeSet) : ListView(context, attrs), BaseAsymmetricView {
 
     protected var _onItemClickListener: AdapterView.OnItemClickListener? = null
     protected var _onItemLongClickListener: AdapterView.OnItemLongClickListener? = null
     protected var gridAdapter: AsymmetricGridViewAdapter? = null
-    private val viewImpl: AsymmetricViewImpl
+    private val viewImpl: AsymmetricGridViewImpl
 
     private val availableSpace: Int
         get() = measuredWidth - paddingLeft - paddingRight
 
     init {
 
-        viewImpl = AsymmetricViewImpl(context)
+        viewImpl = AsymmetricGridViewImpl(context)
 
         val vto = viewTreeObserver
         vto?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
@@ -118,7 +118,7 @@ class AsymmetricGridView(context: Context, attrs: AttributeSet) : ListView(conte
     }
 
     override fun onRestoreInstanceState(state: Parcelable) {
-        if (state !is AsymmetricViewImpl.SavedState) {
+        if (state !is AsymmetricGridViewImpl.SavedState) {
             super.onRestoreInstanceState(state)
             return
         }

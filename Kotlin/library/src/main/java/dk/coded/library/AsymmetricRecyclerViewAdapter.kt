@@ -5,7 +5,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 
 class AsymmetricRecyclerViewAdapter<T : RecyclerView.ViewHolder>(context: Context, private val recyclerView: AsymmetricRecyclerView,
-                                                                 private val wrappedAdapter: AGVRecyclerViewAdapter<T>) : RecyclerView.Adapter<AdapterImpl.ViewHolder>(), BGVBaseAdapter<T> {
+                                                                 private val wrappedAdapter: RecyclerGridViewAdapter<T>) : RecyclerView.Adapter<AdapterImpl.ViewHolder>(), BaseAdapter<T> {
     private val adapterImpl: AdapterImpl
 
     override val actualItemCount: Int
@@ -33,17 +33,17 @@ class AsymmetricRecyclerViewAdapter<T : RecyclerView.ViewHolder>(context: Contex
         return adapterImpl.rowCount
     }
 
-    override fun getItem(position: Int): BGVAsymmetricItem {
+    override fun getItem(position: Int): AsymmetricGridItem {
         return wrappedAdapter.getItem(position)
     }
 
     override fun onCreateAsymmetricViewHolder(
-            position: Int, parent: ViewGroup, viewType: Int): BGVAsymmetricViewHolder<T> {
-        return BGVAsymmetricViewHolder(wrappedAdapter.onCreateViewHolder(parent, viewType))
+            position: Int, parent: ViewGroup, viewType: Int): AsymmetricGridViewHolder<T> {
+        return AsymmetricGridViewHolder(wrappedAdapter.onCreateViewHolder(parent, viewType))
     }
 
     override fun onBindAsymmetricViewHolder(
-            holder: BGVAsymmetricViewHolder<T>, parent: ViewGroup, position: Int) {
+            holder: AsymmetricGridViewHolder<T>, parent: ViewGroup, position: Int) {
         wrappedAdapter.onBindViewHolder(holder.wrappedViewHolder!!, position)
     }
 

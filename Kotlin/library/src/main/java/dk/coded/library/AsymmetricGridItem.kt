@@ -2,7 +2,7 @@ package dk.coded.library
 
 import android.os.Parcelable
 
-interface BGVAsymmetricItem : Parcelable {
+interface AsymmetricGridItem : Parcelable {
     val columnSpan: Int
     val rowSpan: Int
 }

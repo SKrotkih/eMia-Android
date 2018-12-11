@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.DisplayMetrics
 import android.view.WindowManager
 
-object BGVUtils {
+object UtilsLibrary {
     fun dpToPx(context: Context, dp: Float): Int {
         // Took from http://stackoverflow.com/questions/8309354/formula-px-to-dp-dp-to-px-android
         val scale = context.resources.displayMetrics.density

@@ -7,15 +7,15 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.ViewTreeObserver
 
-class AsymmetricRecyclerView(context: Context, attrs: AttributeSet) : RecyclerView(context, attrs), BVGAsymmetricView {
-    private val viewImpl: AsymmetricViewImpl
+class AsymmetricRecyclerView(context: Context, attrs: AttributeSet) : RecyclerView(context, attrs), BaseAsymmetricView {
+    private val viewImpl: AsymmetricGridViewImpl
     private var adapter: AsymmetricRecyclerViewAdapter<*>? = null
 
     private val availableSpace: Int
         get() = measuredWidth - paddingLeft - paddingRight
 
     init {
-        viewImpl = AsymmetricViewImpl(context)
+        viewImpl = AsymmetricGridViewImpl(context)
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
         val vto = viewTreeObserver

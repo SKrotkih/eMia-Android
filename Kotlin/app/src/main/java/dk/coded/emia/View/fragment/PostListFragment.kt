@@ -13,14 +13,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import android.widget.ListAdapter
-import android.widget.ListView
 
 import java.util.ArrayList
 
 import dk.coded.library.AsymmetricGridViewAdapter
 import dk.coded.library.AsymmetricGridView
-import dk.coded.library.Utils
+import dk.coded.library.UtilsLibrary
 
 import dk.coded.emia.R
 import dk.coded.emia.View.activity.MainActivity
@@ -74,7 +72,7 @@ abstract class PostListFragment : Fragment(), AdapterView.OnItemClickListener {
 
         gridView.setRequestedColumnCount(2)
         gridView.setBackgroundColor(Color.parseColor("#FFFFFF"))
-        gridView.requestedHorizontalSpacing = Utils.dpToPx(context, 3f)
+        gridView.requestedHorizontalSpacing = UtilsLibrary.dpToPx(context, 3f)
         gridView.isDebugging = true
         gridView.onItemClickListener = this
 

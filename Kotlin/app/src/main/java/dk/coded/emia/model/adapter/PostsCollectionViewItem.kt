@@ -3,10 +3,10 @@ package dk.coded.emia.model.adapter
 import android.os.Parcel
 import android.os.Parcelable
 
-import dk.coded.library.AsymmetricItem
+import dk.coded.library.AsymmetricGridItem
 import dk.coded.emia.model.Data.Post
 
-class PostsCollectionViewItem : AsymmetricItem {
+class PostsCollectionViewItem : AsymmetricGridItem {
     var _columnSpan: Int = 0
     var _rowSpan: Int = 0
     var position: Int = 0

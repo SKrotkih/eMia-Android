@@ -5,7 +5,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import android.view.View
 
-internal class AsymmetricViewImpl(context: Context) {
+internal class AsymmetricGridViewImpl(context: Context) {
     var numColumns = DEFAULT_COLUMN_COUNT
         protected set
     var requestedHorizontalSpacing: Int = 0
@@ -16,7 +16,7 @@ internal class AsymmetricViewImpl(context: Context) {
     private var _requestedColumnCount: Int = 0
 
     init {
-        requestedHorizontalSpacing = BGVUtils.dpToPx(context, 5f)
+        requestedHorizontalSpacing = UtilsLibrary.dpToPx(context, 5f)
     }
 
     var requestedColumnWidth: Int

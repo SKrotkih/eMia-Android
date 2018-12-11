@@ -7,7 +7,7 @@ import java.util.Stack
 
 internal class BGVObjectPool<T> : Parcelable {
     var stack = Stack<T>()
-    var factory: BGVPoolObjectFactory<T>? = null
+    var factory: BasePoolObjectFactory<T>? = null
     var stats = PoolStats()
 
     constructor(`in`: Parcel) {}
@@ -15,7 +15,7 @@ internal class BGVObjectPool<T> : Parcelable {
     constructor() {
     }
 
-    constructor(factory: BGVPoolObjectFactory<T>) {
+    constructor(factory: BasePoolObjectFactory<T>) {
         this.factory = factory
     }
 

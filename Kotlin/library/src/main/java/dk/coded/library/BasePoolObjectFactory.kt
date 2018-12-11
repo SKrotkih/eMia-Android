@@ -1,5 +1,5 @@
 package dk.coded.library
 
-interface BGVPoolObjectFactory<T> {
+interface BasePoolObjectFactory<T> {
     fun createObject(): T
 }
